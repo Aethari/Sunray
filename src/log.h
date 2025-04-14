@@ -3,8 +3,11 @@
 
 /// Creates a log file at the exe's directory
 /// Should only be called once, at the top of the 
-/// main function
+/// main function. Sets log_path (defined in log.c)
+/// to the absolute path of the file created.
 void log_init();
+
+char *log_get_path();
 
 /// Writes a message to the log file
 void log_write(char path[], char msg[]);

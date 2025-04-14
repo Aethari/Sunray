@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <time.h>
 #include <libgen.h>
 
@@ -11,6 +12,14 @@
 	#include <windows.h>
 #endif
 
+char log_path[1000];
+
+char *log_get_path() {
+	char *out = malloc(strlen(log_path) + 1);
+	strcpy(out, log_path);
+	return out;
+}
+
 void log_write(char path[], char msg[]) {
 	FILE *log_file = fopen(path, "a");
 	fwrite(msg, strlen(msg), 1, log_file);
@@ -19,10 +28,7 @@ void log_write(char path[], char msg[]) {
 
 void log_pwrite(char path[], char msg[]) {
 	printf(msg);
-
-	FILE *log_file = fopen(path, "a");
-	fwrite(msg, strlen(msg), 1, log_file);
-	fclose(log_file);
+	log_write(path, msg);
 }
 
 void log_init() {
@@ -35,7 +41,6 @@ void log_init() {
 	#elif _WIN32
 		GetModuleFileNameA(NULL, exe_path, 1000);
 	#endif
-	char log_path[1000];
 	strcpy(log_path, exe_path);
 	strcpy(log_path, dirname(log_path));
 
