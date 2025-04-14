@@ -4,17 +4,23 @@ CC_WIN=x86_64-w64-mingw32-gcc
 
 # Anytime a path variable is declared here, it should always have a / at the end
 
-# The windows path to Lua's source - lua >= 5.2 is required, 5.4.7 recommended
-LUA_WINPATH=C:/Lua/source/
-
-# The linux path to Lua's source - lua >= 5.2 is required, 5.4.6 recommended
-LUA_LNXPATH=/usr/include/lua5.4/
+# The linux path to a parent include directory - for this project, contains
+# a "lua5.4" folder with Lua 5.4 headers, and an "SDL3" folder with SDL headers.
+# The parent directory should also include a library file (.dll, .so, .a, etc.) 
+# for each header folder.
+LNX_INCLUDEPATH=/usr/include/
 
 # Build flags for linux
-LNX_CFLAGS=-I src -I$(LUA_LNXPATH) -L$(LUA_LNXPATH) -llua5.4 -Wall
+LNX_CFLAGS=-I src -I$(LNX_INCLUDEPATH) -l$(LNX_INCLUDEPATH) -lSDL3 -Wall
 
-# Build flags for windows
-WIN_CFLAGS=-I src -Wall -D_WIN32
+# The windows path to a parent include directory - for this project, contains
+# a "lua5.4" folder with Lua 5.4 headers, and an "SDL3" folder with SDL headers
+# The parent directory should also include a library file (.so, .a, etc.) 
+# for each header folder.
+WIN_INCLUDEPATH=C:/Include/
+
+# Build flags for windows - missing lua at the moment
+WIN_CFLAGS=-I src -I$(WIN_INCLUDEPATH) -L$(WIN_INCLUDEPATH) -lSDL3 -Wall
 
 # Create a debug build targeted to linux
 build-lnx:
