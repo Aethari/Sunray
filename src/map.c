@@ -4,6 +4,11 @@
 
 #include "log.h"
 
+enum TileType {
+	TILE_EMPTY,
+	TILE_BRICK_WALL
+};
+
 int *map = NULL;
 
 int map_size_x, map_size_y;
@@ -33,8 +38,9 @@ void map_change(int *new_map, int sx, int sy) {
 }
 
 int map_get(int x, int y) {
-	return 0;
+	return map[y * map_get_size_x() + x];
 }
 
 void map_set(int value, int x, int y) {
+	map[y * map_get_size_x() + x] = value;
 }

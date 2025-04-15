@@ -15,6 +15,7 @@
 - implement a player
     - input() function that all input is sent to from the update loop
         - function parses input and decides what to do with it
+        - when using this function for movement, also check for collision in the "2d" space
     - cast() function that displays a raycasted view from the player's 
       perspective
     - player's position is kept in 2d space

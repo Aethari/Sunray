@@ -1,6 +1,8 @@
 #ifndef MAP_H
 #define MAP_H
 
+extern enum TileType;
+
 extern int *map;
 
 int map_get_size_x();
