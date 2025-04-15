@@ -37,6 +37,7 @@ test-lnx:
 build-win:
 	@make clean
 	@mkdir build
+	@cp ./include/SDL3.dll ./build/SDL3.dll
 	@$(CC_WIN) ./*.c ./src/*.c $(WIN_CFLAGS) -o ./build/main.exe
 
 # Create a debug build targeted to windows (using build-win), then runs it
