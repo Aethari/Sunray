@@ -10,26 +10,22 @@
 /// Library functions for the game's map
 #include "map.h"
 
+#include "player.h"
+
 /// The game's primary processing loop. Must return a bool determining whether 
 /// or not the game should continue running.
-bool update(SDL_Window *window) {
-	SDL_Event event;
-
-	while(SDL_PollEvent(&event)) {
-		if(event.type == SDL_EVENT_QUIT) {
-			return false;
-		}
-	}
-
-	return true;
+bool update() {
+	return player_handle_input();
 }
 
 /// The game's drawing loop. All draw operations should be called from here
-void draw(SDL_Window *window) {
-	SDL_Surface *surface = SDL_GetWindowSurface(window);
-	SDL_ClearSurface(surface, 0, 0, 0, 1);
+void draw(SDL_Renderer *rend) {
+	SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+	SDL_RenderClear(rend);
 
-	SDL_UpdateWindowSurface(window);
+	player_draw_cast(rend);
+
+	SDL_RenderPresent(rend);
 }
 
 int main(int arc, char *argv[]) {
@@ -49,13 +45,14 @@ int main(int arc, char *argv[]) {
 	);
 
 	// Setup the window
-	log_pwrite(log_path, "[ C ] [Core] Creating SDL window\n");
+	log_pwrite(log_path, "[ C ] [Core] Creating window\n");
 	window = SDL_CreateWindow(
 		"Sunray",
 		800,
 		600, 
 		SDL_WINDOW_OPENGL
 	);
+	SDL_Renderer *rend = SDL_CreateRenderer(window, NULL);
 
 	// DEBUG - set the default map
 	int map[] = {
@@ -79,9 +76,10 @@ int main(int arc, char *argv[]) {
 		running = update(window);
 
 		// Draw to the screen
-		draw(window);
+		draw(rend);
 	}
 
+	log_pwrite(log_path, "[ C ] [Core] Shutting down\n");
 	free(log_path);
 
 	SDL_DestroyWindow(window);
