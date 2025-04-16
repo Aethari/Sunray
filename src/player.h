@@ -17,10 +17,10 @@ bool player_handle_input();
 /// Casts a ray out
 /// Not to be confused with player_draw_cast(), which takes the data
 /// returned by this function and draws it on the screen
-void player_cast_ray();
+void player_cast_rays();
 
 /// Draws the map from the player's perspective on the given SDL_Surface.
 /// Should be called at the end of the drawing loop
-void player_draw_cast(SDL_Renderer *rend);
+void player_draw_cast(SDL_Renderer *rend, bool draw_debug);
 
 #endif

@@ -23,7 +23,7 @@ void draw(SDL_Renderer *rend) {
 	SDL_SetRenderDrawColorFloat(rend, 0, 0, 0, 1);
 	SDL_RenderClear(rend);
 
-	player_draw_cast(rend);
+	player_draw_cast(rend, true);
 
 	SDL_RenderPresent(rend);
 }
@@ -72,8 +72,9 @@ int main(int arc, char *argv[]) {
 	// Main game loop
 	log_pwrite(log_path, "[ C ] [Core] Starting main game loop\n");
 
-	player_set_angle(90);
-	player_set_speed(.0001);
+	player_set_angle(0);
+	player_set_speed(.001);
+	player_set_turnspeed(.01);
 
 	while(running) {
 		// Update game state
