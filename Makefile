@@ -11,7 +11,7 @@ CC_WIN=x86_64-w64-mingw32-gcc
 LNX_INCLUDEPATH=/usr/include/
 
 # Build flags for linux
-LNX_CFLAGS=-I src -I$(LNX_INCLUDEPATH) -L$(LNX_INCLUDEPATH) -lSDL3 -Wall
+LNX_CFLAGS=-I src -I$(LNX_INCLUDEPATH) -L$(LNX_INCLUDEPATH) -lSDL3 -lm -Wall
 
 # The windows path to a parent include directory - for this project, contains
 # a "lua5.4" folder with Lua 5.4 headers, and an "SDL3" folder with SDL headers
@@ -20,7 +20,7 @@ LNX_CFLAGS=-I src -I$(LNX_INCLUDEPATH) -L$(LNX_INCLUDEPATH) -lSDL3 -Wall
 WIN_INCLUDEPATH=C:/Include/
 
 # Build flags for windows - missing lua at the moment
-WIN_CFLAGS=-I src -I$(WIN_INCLUDEPATH) -L$(WIN_INCLUDEPATH) -lSDL3 -Wall
+WIN_CFLAGS=-I src -I$(WIN_INCLUDEPATH) -L$(WIN_INCLUDEPATH) -lSDL3 -lm -Wall
 
 # Create a debug build targeted to linux
 build-lnx:

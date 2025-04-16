@@ -20,7 +20,7 @@ bool update() {
 
 /// The game's drawing loop. All draw operations should be called from here
 void draw(SDL_Renderer *rend) {
-	SDL_SetRenderDrawColor(rend, 0, 0, 0, 255);
+	SDL_SetRenderDrawColorFloat(rend, 0, 0, 0, 1);
 	SDL_RenderClear(rend);
 
 	player_draw_cast(rend);
@@ -71,6 +71,10 @@ int main(int arc, char *argv[]) {
 	
 	// Main game loop
 	log_pwrite(log_path, "[ C ] [Core] Starting main game loop\n");
+
+	player_set_angle(90);
+	player_set_speed(.0001);
+
 	while(running) {
 		// Update game state
 		running = update(window);
