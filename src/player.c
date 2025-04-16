@@ -5,6 +5,7 @@
 #include <SDL3/SDL.h>
 
 #include "log.h"
+#include "map.h"
 
 float player_pos_x, player_pos_y, player_speed, player_turnspeed, player_angle;
 
@@ -91,8 +92,64 @@ bool player_handle_input() {
 	return true;
 }
 
-void player_cast_rays() {
+void player_cast_ray() {
 	float angle = player_get_angle();
+
+	float x = player_get_pos_x();
+	float y = player_get_pos_y();
+	int map_x = floor(x);
+	int map_y = floor(y);
+
+	// the directions of the ray
+	float ray_dir_x = cos(angle);
+	float ray_dir_y = sin(angle);
+
+	// how far to move the ray to cross a tile
+	// dd = DeltaDist
+	float dd_x = abs(1 / ray_dir_x);
+	float dd_y = abs(1 / ray_dir_y);
+
+	// which direction to move the ray
+	int step_x, step_y;
+
+	//  distance from the player's position to the wall
+	int side_dist_x, side_dist_y;
+
+	if(ray_dir_x < 0) {
+		step_x = -1;
+		side_dist_x = (x-map_x) * dd_x;
+	} else {
+		step_x = 1;
+		side_dist_x = (map_x + 1 - x) * dd_x;
+	}
+
+	if(ray_dir_y < 0) {
+		step_y = 1;
+		side_dist_y = (y-map_y) * dd_y;
+	} else {
+		step_y = 1;
+		side_dist_y = (map_y + 1 - y) * dd_y;
+	}
+
+	bool hit = false;
+	int side;
+
+	while(!hit) {
+		// get which wall is closer and move ray along the closer wall
+		if(side_dist_x < side_dist_y) {
+			side_dist_x = side_dist_x + dd_x;
+			map_x = map_x + step_x;
+			side = 0;
+		} else {
+			side_dist_y = side_dist_y + dd_y;
+			map_y = map_y + step_y;
+			side = 1;
+		}
+
+		if(map_get(map_x, map_y) == 1) {
+			hit = true;
+		}
+	}
 }
 
 void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
@@ -131,5 +188,5 @@ void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
 		);
 	}
 
-	player_cast_rays();
+	player_cast_ray();
 }
