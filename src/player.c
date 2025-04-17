@@ -7,7 +7,7 @@
 #include "log.h"
 #include "map.h"
 
-float player_pos_x, player_pos_y, player_speed, player_turnspeed, player_angle;
+float player_pos_x, player_pos_y, player_speed, player_turnspeed, player_angle, player_fov;
 
 float player_get_pos_x() {
 	return player_pos_x;
@@ -29,6 +29,10 @@ float player_get_angle() {
 	return player_angle;
 }
 
+float player_get_fov() {
+	return player_fov;
+}
+
 void player_set_speed(float new_speed) {
 	player_speed = new_speed;
 }
@@ -39,6 +43,10 @@ void player_set_turnspeed(float new_speed) {
 
 void player_set_angle(float new_angle) {
 	player_angle = new_angle;
+}
+
+void player_set_fov(float new_fov) {
+	player_fov = new_fov;
 }
 
 bool player_handle_input() {
@@ -92,9 +100,7 @@ bool player_handle_input() {
 	return true;
 }
 
-void player_cast_ray(float *perp_wall_dist, float *wall_height) {
-	float angle = player_get_angle();
-
+void player_cast_ray(float angle, float *perp_wall_dist, float *wall_height) {
 	float x = player_get_pos_x();
 	float y = player_get_pos_y();
 	int map_x = floor(x);
@@ -106,14 +112,14 @@ void player_cast_ray(float *perp_wall_dist, float *wall_height) {
 
 	// how far to move the ray to cross a tile
 	// dd = DeltaDist
-	float dd_x = abs(1 / ray_dir_x);
-	float dd_y = abs(1 / ray_dir_y);
+	float dd_x = fabsf(1 / ray_dir_x);
+	float dd_y = fabsf(1 / ray_dir_y);
 
 	// which direction to move the ray
 	int step_x, step_y;
 
 	//  distance from the player's position to the wall
-	int side_dist_x, side_dist_y;
+	float side_dist_x, side_dist_y;
 
 	if(ray_dir_x < 0) {
 		step_x = -1;
@@ -124,7 +130,7 @@ void player_cast_ray(float *perp_wall_dist, float *wall_height) {
 	}
 
 	if(ray_dir_y < 0) {
-		step_y = 1;
+		step_y = -1;
 		side_dist_y = (y-map_y) * dd_y;
 	} else {
 		step_y = 1;
@@ -157,7 +163,6 @@ void player_cast_ray(float *perp_wall_dist, float *wall_height) {
 		*perp_wall_dist = (map_y - y + (1-step_y) / 2) / ray_dir_y;
 	}
 
-	// redeclared to fix typing with float and *float
 	*wall_height = 300 / *perp_wall_dist;
 }
 
@@ -165,7 +170,16 @@ void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
 	int width, height;
 	SDL_GetRenderOutputSize(rend, &width, &height);
 
-	// Draw the ground
+	// the amount of rays to be cast (columns on the screen)
+	int rays = 200;
+
+	// the width of each column
+	int slice_width = width / rays;
+
+	// how far to move after each ray
+	int step = player_get_fov() / rays;
+
+	// draw the ground
 	SDL_FRect ground;
 	ground.x = 0;
 	ground.y = height/2;
@@ -174,6 +188,34 @@ void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
 
 	SDL_SetRenderDrawColorFloat(rend, 0, .1, .2, 1);
 	SDL_RenderFillRect(rend, &ground);
+
+	for(int i = 0; i < rays; i++) {
+		float angle = player_get_angle() - (player_get_fov() / 2) + i * step;
+
+		float perp_wall_dist, wall_height;
+		player_cast_ray(angle, &perp_wall_dist, &wall_height);
+
+		float corrected_dist = perp_wall_dist * cosf(angle - player_get_angle());
+		wall_height = 300 / corrected_dist;
+
+		int scaled_height;
+		if(height < wall_height) {
+			scaled_height = height;
+		} else {
+			scaled_height = wall_height;
+		}
+
+		int y_pos = (height/2) - (scaled_height/2);
+
+		SDL_FRect wall;
+		wall.x = i*slice_width;
+		wall.y = y_pos;
+		wall.w = slice_width;
+		wall.h = scaled_height;
+
+		SDL_SetRenderDrawColorFloat(rend, 0, 0, 1, 1);
+		SDL_RenderFillRect(rend, &wall);
+	}
 
 	if(draw_debug) {
 		float new_x = player_get_pos_x() * 500;
@@ -196,7 +238,4 @@ void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
 			new_y + sin(player_get_angle()) * 100
 		);
 	}
-
-	float perp_wall_dist, wall_height;
-	player_cast_ray(&perp_wall_dist, &wall_height);
 }
