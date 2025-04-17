@@ -92,7 +92,7 @@ bool player_handle_input() {
 	return true;
 }
 
-void player_cast_ray() {
+void player_cast_ray(float *perp_wall_dist, float *wall_height) {
 	float angle = player_get_angle();
 
 	float x = player_get_pos_x();
@@ -150,6 +150,15 @@ void player_cast_ray() {
 			hit = true;
 		}
 	}
+
+	if(side == 0) {
+		*perp_wall_dist = (map_x - x + (1-step_x) / 2) / ray_dir_x;
+	} else {
+		*perp_wall_dist = (map_y - y + (1-step_y) / 2) / ray_dir_y;
+	}
+
+	// redeclared to fix typing with float and *float
+	*wall_height = 300 / *perp_wall_dist;
 }
 
 void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
@@ -188,5 +197,6 @@ void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
 		);
 	}
 
-	player_cast_ray();
+	float perp_wall_dist, wall_height;
+	player_cast_ray(&perp_wall_dist, &wall_height);
 }
