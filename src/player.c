@@ -33,6 +33,14 @@ float player_get_fov() {
 	return player_fov;
 }
 
+void player_set_pos_x(float new_x) {
+	player_pos_x = new_x;
+}
+
+void player_set_pos_y(float new_y) {
+	player_pos_y = new_y;
+}
+
 void player_set_speed(float new_speed) {
 	player_speed = new_speed;
 }
@@ -174,10 +182,10 @@ void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
 	int rays = 200;
 
 	// the width of each column
-	int slice_width = width / rays;
+	float slice_width = (float)width / rays;
 
 	// how far to move after each ray
-	int step = player_get_fov() / rays;
+	float step = player_get_fov() / (float)rays;
 
 	// draw the ground
 	SDL_FRect ground;
@@ -196,7 +204,7 @@ void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
 		player_cast_ray(angle, &perp_wall_dist, &wall_height);
 
 		float corrected_dist = perp_wall_dist * cosf(angle - player_get_angle());
-		wall_height = 300 / corrected_dist;
+		wall_height = height / corrected_dist;
 
 		int scaled_height;
 		if(height < wall_height) {
