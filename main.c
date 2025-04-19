@@ -12,10 +12,24 @@
 
 #include "player.h"
 
+/// How long a frame should be, in ms (16ms is 60 fps)
+#define FRAME_TARGET_TIME 16
+Uint64 last_frame_time = 0;
+
 /// The game's primary processing loop. Must return a bool determining whether 
 /// or not the game should continue running.
 bool update() {
-	return player_handle_input();
+	Uint64 now = SDL_GetTicks();
+	if(last_frame_time == 0) {
+		last_frame_time = now;
+		return true;
+	}
+
+	// we divide by 1000 to convert ms to seconds
+	float dt = (now - last_frame_time) / (float)1000;
+	last_frame_time = now;
+
+	return player_handle_input(dt);
 }
 
 /// The game's drawing loop. All draw operations should be called from here
@@ -23,7 +37,7 @@ void draw(SDL_Renderer *rend) {
 	SDL_SetRenderDrawColorFloat(rend, 0, 0, 0, 1);
 	SDL_RenderClear(rend);
 
-	player_draw_cast(rend, true);
+	player_draw_cast(rend);
 
 	SDL_RenderPresent(rend);
 }
@@ -74,16 +88,25 @@ int main(int arc, char *argv[]) {
 
 	player_set_pos_y(1.25);
 	player_set_angle(0);
-	player_set_speed(.0003);
-	player_set_turnspeed(.00025);
-	player_set_fov(1.0472);
+	player_set_speed(4);
+	player_set_turnspeed(4);
+	player_set_fov(1.0472); // (in radians)
 
 	while(running) {
+		Uint64 frame_start = SDL_GetTicks();
+
 		// Update game state
-		running = update(window);
+		running = update();
 
 		// Draw to the screen
 		draw(rend);
+
+		// Lock processing to FRAME_TARGET_TIME ms per frame
+		// was a neccesary step for delta time to work
+		Uint64 frame_time = SDL_GetTicks() - frame_start;
+		if(frame_time < FRAME_TARGET_TIME) {
+			SDL_Delay(FRAME_TARGET_TIME - frame_time);
+		}
 	}
 
 	log_pwrite(log_path, "[ C ] [Core] Shutting down\n");

@@ -57,13 +57,16 @@ void player_set_fov(float new_fov) {
 	player_fov = new_fov;
 }
 
-bool player_handle_input() {
+bool player_handle_input(float dt) {
 	SDL_Event event;
 	
 	char *log_path = log_get_path();
 
 	float dx = 0;
 	float dy = 0;
+
+	float speed = player_get_speed() * dt;
+	float turn_speed = player_get_turnspeed() * dt;
 
 	// quitting
 	while(SDL_PollEvent(&event)) {
@@ -77,28 +80,28 @@ bool player_handle_input() {
 	const bool *keys = SDL_GetKeyboardState(NULL);
 
 	// forwards and backwards
-	if(keys[SDL_SCANCODE_W]) {
-		dx = cos(player_get_angle()) * player_get_speed();
-		dy = sin(player_get_angle()) * player_get_speed();
-	} else if(keys[SDL_SCANCODE_S]) {
-		dx = -cos(player_get_angle()) * player_get_speed();
-		dy = -sin(player_get_angle()) * player_get_speed();
+	if(keys[SDL_SCANCODE_W] || keys[SDL_SCANCODE_UP]) {
+		dx = cos(player_get_angle()) * speed;
+		dy = sin(player_get_angle()) * speed;
+	} else if(keys[SDL_SCANCODE_S] || keys[SDL_SCANCODE_DOWN]) {
+		dx = -cos(player_get_angle()) * speed;
+		dy = -sin(player_get_angle()) * speed;
 	}
 
 	// left and right
 	if(keys[SDL_SCANCODE_A]) {
-		dx = cos(player_get_angle() - M_PI/2) * player_get_speed();
-		dy = sin(player_get_angle() - M_PI/2) * player_get_speed();
+		dx = cos(player_get_angle() - M_PI/2) * speed;
+		dy = sin(player_get_angle() - M_PI/2) * speed;
 	} else if(keys[SDL_SCANCODE_D]) {
-		dx = -cos(player_get_angle() - M_PI/2) * player_get_speed();
-		dy = -sin(player_get_angle() - M_PI/2) * player_get_speed();
+		dx = -cos(player_get_angle() - M_PI/2) * speed;
+		dy = -sin(player_get_angle() - M_PI/2) * speed;
 	}
 
 	// arrow keys to turn
 	if(keys[SDL_SCANCODE_LEFT]) {
-		player_set_angle(player_get_angle() - player_get_turnspeed());
+		player_set_angle(player_get_angle() - turn_speed);
 	} else if(keys[SDL_SCANCODE_RIGHT]) {
-		player_set_angle(player_get_angle() + player_get_turnspeed());
+		player_set_angle(player_get_angle() + turn_speed);
 	}
 
 	player_pos_x += dx;
@@ -174,7 +177,7 @@ void player_cast_ray(float angle, float *perp_wall_dist, float *wall_height) {
 	*wall_height = 300 / *perp_wall_dist;
 }
 
-void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
+void player_draw_cast(SDL_Renderer *rend) {
 	int width, height;
 	SDL_GetRenderOutputSize(rend, &width, &height);
 
@@ -194,7 +197,7 @@ void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
 	ground.w = width;
 	ground.h = height/2;
 
-	SDL_SetRenderDrawColorFloat(rend, 0, .1, .2, 1);
+	SDL_SetRenderDrawColorFloat(rend, .1, .1, .1, 1);
 	SDL_RenderFillRect(rend, &ground);
 
 	for(int i = 0; i < rays; i++) {
@@ -221,29 +224,9 @@ void player_draw_cast(SDL_Renderer *rend, bool draw_debug) {
 		wall.w = slice_width;
 		wall.h = scaled_height;
 
-		SDL_SetRenderDrawColorFloat(rend, 0, 0, 1, 1);
+		float new_color = floor(180 / (1 + corrected_dist / 4));
+
+		SDL_SetRenderDrawColorFloat(rend, new_color/200, new_color/200, new_color/200, 1);
 		SDL_RenderFillRect(rend, &wall);
-	}
-
-	if(draw_debug) {
-		float new_x = player_get_pos_x() * 500;
-		float new_y = player_get_pos_y() * 500;
-
-		SDL_FRect player;
-		player.x = new_x;
-		player.y = new_y;
-		player.w = 16;
-		player.h = 16;
-
-		SDL_SetRenderDrawColorFloat(rend, 0, 1, 0, 1);
-		SDL_RenderFillRect(rend, &player);
-
-		SDL_SetRenderDrawColorFloat(rend, 1, 0, 0, 1);
-		SDL_RenderLine(rend, 
-			new_x, 
-			new_y, 
-			new_x + cos(player_get_angle()) * 100, 
-			new_y + sin(player_get_angle()) * 100
-		);
 	}
 }
