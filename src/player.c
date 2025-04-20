@@ -2,10 +2,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
+
 #include <SDL3/SDL.h>
 
 #include "log.h"
 #include "map.h"
+
+#define WALL_COLLISION_DISTANCE .2
 
 float player_pos_x, player_pos_y, player_speed, player_turnspeed, player_angle, player_fov;
 
@@ -60,8 +63,6 @@ void player_set_fov(float new_fov) {
 bool player_handle_input(float dt) {
 	SDL_Event event;
 	
-	char *log_path = log_get_path();
-
 	float dx = 0;
 	float dy = 0;
 
@@ -71,7 +72,6 @@ bool player_handle_input(float dt) {
 	// quitting
 	while(SDL_PollEvent(&event)) {
 		if(event.type == SDL_EVENT_QUIT) {
-			free(log_path);
 			return false;
 		}
 	}
@@ -79,35 +79,63 @@ bool player_handle_input(float dt) {
 	// listen for keys
 	const bool *keys = SDL_GetKeyboardState(NULL);
 
+	// collision (kind of, almost) works, but instead of checking absolute directions,
+	// we need to check the direction the player is trying to move (using trig and stuff)
+
 	// forwards and backwards
-	if(keys[SDL_SCANCODE_W] || keys[SDL_SCANCODE_UP]) {
-		dx = cos(player_get_angle()) * speed;
-		dy = sin(player_get_angle()) * speed;
-	} else if(keys[SDL_SCANCODE_S] || keys[SDL_SCANCODE_DOWN]) {
-		dx = -cos(player_get_angle()) * speed;
-		dy = -sin(player_get_angle()) * speed;
+	if(
+		keys[SDL_SCANCODE_W] ||
+		keys[SDL_SCANCODE_UP]
+	) {
+		int pos_x = player_get_pos_x() + cos(player_get_angle()) * WALL_COLLISION_DISTANCE;
+		int pos_y = player_get_pos_y() + sin(player_get_angle()) * WALL_COLLISION_DISTANCE;
+
+		if(!map_check_pos(pos_x, pos_y)) {
+			dx = cos(player_get_angle()) * speed;
+			dy = sin(player_get_angle()) * speed;
+		}
+	} else if(
+		keys[SDL_SCANCODE_S] ||
+		keys[SDL_SCANCODE_DOWN]
+	) {
+		int pos_x = player_get_pos_x() - cos(player_get_angle()) * WALL_COLLISION_DISTANCE;
+		int pos_y = player_get_pos_y() - sin(player_get_angle()) * WALL_COLLISION_DISTANCE;
+
+		if(!map_check_pos(pos_x, pos_y)) {
+			dx += -cos(player_get_angle()) * speed;
+			dy += -sin(player_get_angle()) * speed;
+		}
 	}
 
 	// left and right
 	if(keys[SDL_SCANCODE_A]) {
-		dx = cos(player_get_angle() - M_PI/2) * speed;
-		dy = sin(player_get_angle() - M_PI/2) * speed;
+		int pos_x = player_get_pos_x() + cos(player_get_angle() - M_PI/2) * WALL_COLLISION_DISTANCE;
+		int pos_y = player_get_pos_y() + sin(player_get_angle() - M_PI/2) * WALL_COLLISION_DISTANCE;
+
+		if(!map_check_pos(pos_x, pos_y)) {
+			dx += cos(player_get_angle() - M_PI/2) * speed;
+			dy += sin(player_get_angle() - M_PI/2) * speed;
+		}
 	} else if(keys[SDL_SCANCODE_D]) {
-		dx = -cos(player_get_angle() - M_PI/2) * speed;
-		dy = -sin(player_get_angle() - M_PI/2) * speed;
+		int pos_x = player_get_pos_x() - cos(player_get_angle() - M_PI/2) * WALL_COLLISION_DISTANCE;
+		int pos_y = player_get_pos_y() - sin(player_get_angle() - M_PI/2) * WALL_COLLISION_DISTANCE;
+
+		if(!map_check_pos(pos_x, pos_y)) {
+			dx += -cos(player_get_angle() - M_PI/2) * speed;
+			dy += -sin(player_get_angle() - M_PI/2) * speed;
+		}
 	}
 
 	// arrow keys to turn
-	if(keys[SDL_SCANCODE_LEFT]) {
+	if(keys[SDL_SCANCODE_LEFT] || keys[SDL_SCANCODE_J]) {
 		player_set_angle(player_get_angle() - turn_speed);
-	} else if(keys[SDL_SCANCODE_RIGHT]) {
+	} else if(keys[SDL_SCANCODE_RIGHT] || keys[SDL_SCANCODE_L]) {
 		player_set_angle(player_get_angle() + turn_speed);
 	}
 
 	player_pos_x += dx;
 	player_pos_y += dy;
 
-	free(log_path);
 	return true;
 }
 
@@ -182,7 +210,7 @@ void player_draw_cast(SDL_Renderer *rend) {
 	SDL_GetRenderOutputSize(rend, &width, &height);
 
 	// the amount of rays to be cast (columns on the screen)
-	int rays = 200;
+	int rays = 150;
 
 	// the width of each column
 	float slice_width = (float)width / rays;

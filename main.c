@@ -86,7 +86,8 @@ int main(int arc, char *argv[]) {
 	// Main game loop
 	log_pwrite(log_path, "[ C ] [Core] Starting main game loop\n");
 
-	player_set_pos_y(1.25);
+	player_set_pos_x(1);
+	player_set_pos_y(1.5);
 	player_set_angle(0);
 	player_set_speed(4);
 	player_set_turnspeed(4);
