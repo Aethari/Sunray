@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
+#include <math.h>
 
 #include "log.h"
 
@@ -10,7 +12,6 @@ enum TileType {
 };
 
 int *map = NULL;
-
 int map_size_x, map_size_y;
 
 int map_get_size_x() {
@@ -43,4 +44,26 @@ int map_get(int x, int y) {
 
 void map_set(int value, int x, int y) {
 	map[y * map_get_size_x() + x] = value;
+}
+
+bool map_check_pos(int pos_x, int pos_y) {
+	enum TileType tile = (enum TileType) map_get(pos_x, pos_y);
+
+	switch(tile) {
+		case TILE_EMPTY:
+			return false;
+		default:
+			return true;
+	}
+}
+
+bool map_check_dir(int pos_x, int pos_y, float dx, float dy) {
+	enum TileType tile = (enum TileType) map_get((int)(pos_x + dx), (int)(pos_y + dy));
+
+	switch(tile) {
+		case TILE_EMPTY:
+			return false;
+		default:
+			return true;
+	}
 }
