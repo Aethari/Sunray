@@ -66,12 +66,6 @@ bool player_handle_input(float dt) {
 	float dx = 0;
 	float dy = 0;
 
-	float move_x = cos(player_get_angle()) * WALL_COLLISION_DISTANCE;
-	float move_y = sin(player_get_angle()) * WALL_COLLISION_DISTANCE;
-
-	float strafe_x = cos(player_get_angle() - M_PI/2) * WALL_COLLISION_DISTANCE;
-	float strafe_y = sin(player_get_angle() - M_PI/2) * WALL_COLLISION_DISTANCE;
-
 	float speed = player_get_speed() * dt;
 	float turn_speed = player_get_turnspeed() * dt;
 
@@ -85,74 +79,49 @@ bool player_handle_input(float dt) {
 	// listen for keys
 	const bool *keys = SDL_GetKeyboardState(NULL);
 
+	// collision (kind of, almost) works, but instead of checking absolute directions,
+	// we need to check the direction the player is trying to move (using trig and stuff)
+
 	// forwards and backwards
 	if(
 		keys[SDL_SCANCODE_W] ||
 		keys[SDL_SCANCODE_UP]
 	) {
-		if(!map_check_pos(
-			floor(player_get_pos_x() + move_x),
-			floor(player_get_pos_y())
-		)) {
-			dx = cos(player_get_angle()) * speed;
-		}
+		int pos_x = player_get_pos_x() + cos(player_get_angle()) * WALL_COLLISION_DISTANCE;
+		int pos_y = player_get_pos_y() + sin(player_get_angle()) * WALL_COLLISION_DISTANCE;
 
-		if(!map_check_pos(
-			round(player_get_pos_x()),
-			round(player_get_pos_y() + move_y)
-		)) {
+		if(!map_check_pos(pos_x, pos_y)) {
+			dx = cos(player_get_angle()) * speed;
 			dy = sin(player_get_angle()) * speed;
 		}
 	} else if(
 		keys[SDL_SCANCODE_S] ||
 		keys[SDL_SCANCODE_DOWN]
 	) {
-		if(!map_check_pos(
-			floor(player_get_pos_x() + move_x),
-			floor(player_get_pos_y())
-		)) {
-			dx += -cos(player_get_angle()) * speed;
-		}
+		int pos_x = player_get_pos_x() - cos(player_get_angle()) * WALL_COLLISION_DISTANCE;
+		int pos_y = player_get_pos_y() - sin(player_get_angle()) * WALL_COLLISION_DISTANCE;
 
-		if(!map_check_pos(
-			floor(player_get_pos_x()),
-			floor(player_get_pos_y() + move_y)
-		)) {
+		if(!map_check_pos(pos_x, pos_y)) {
+			dx += -cos(player_get_angle()) * speed;
 			dy += -sin(player_get_angle()) * speed;
 		}
 	}
 
 	// left and right
-	if(
-		keys[SDL_SCANCODE_A]
-	) {
-		if(!map_check_pos(
-			floor(player_get_pos_x() + move_x),
-			floor(player_get_pos_y())
-		)) {
-			dx += cos(player_get_angle() - M_PI/2) * speed;
-		}
+	if(keys[SDL_SCANCODE_A]) {
+		int pos_x = player_get_pos_x() + cos(player_get_angle() - M_PI/2) * WALL_COLLISION_DISTANCE;
+		int pos_y = player_get_pos_y() + sin(player_get_angle() - M_PI/2) * WALL_COLLISION_DISTANCE;
 
-		if(!map_check_pos(
-			floor(player_get_pos_x()),
-			floor(player_get_pos_y() + move_y)
-		)) {
+		if(!map_check_pos(pos_x, pos_y)) {
+			dx += cos(player_get_angle() - M_PI/2) * speed;
 			dy += sin(player_get_angle() - M_PI/2) * speed;
 		}
-	} else if(
-		keys[SDL_SCANCODE_D]
-	) {
-		if(!map_check_pos(
-			floor(player_get_pos_x() + move_x),
-			floor(player_get_pos_y())
-		)) {
-			dx += -cos(player_get_angle() - M_PI/2) * speed;
-		}
+	} else if(keys[SDL_SCANCODE_D]) {
+		int pos_x = player_get_pos_x() - cos(player_get_angle() - M_PI/2) * WALL_COLLISION_DISTANCE;
+		int pos_y = player_get_pos_y() - sin(player_get_angle() - M_PI/2) * WALL_COLLISION_DISTANCE;
 
-		if(!map_check_pos(
-			floor(player_get_pos_x()),
-			floor(player_get_pos_y() + move_y)
-		)) {
+		if(!map_check_pos(pos_x, pos_y)) {
+			dx += -cos(player_get_angle() - M_PI/2) * speed;
 			dy += -sin(player_get_angle() - M_PI/2) * speed;
 		}
 	}
