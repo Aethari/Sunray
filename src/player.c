@@ -225,7 +225,7 @@ void player_draw_cast(SDL_Renderer *rend) {
 	ground.w = width;
 	ground.h = height/2;
 
-	SDL_SetRenderDrawColorFloat(rend, .1, .1, .1, 1);
+	SDL_SetRenderDrawColorFloat(rend, .15, .15, .15, 1);
 	SDL_RenderFillRect(rend, &ground);
 
 	for(int i = 0; i < rays; i++) {

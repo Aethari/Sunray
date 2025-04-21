@@ -7,7 +7,11 @@
 /// to the absolute path of the file created.
 void log_init();
 
+/// Gets the path to the current log file and returns a pointer to it
 char *log_get_path();
+
+/// Clears the log file, sparing no content
+void log_clear(char path[]);
 
 /// Writes a message to the log file
 void log_write(char path[], char msg[]);

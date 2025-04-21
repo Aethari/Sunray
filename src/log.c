@@ -20,6 +20,11 @@ char *log_get_path() {
 	return out;
 }
 
+void log_clear(char path[]) {
+	FILE *log_file = fopen(path, "w");
+	fclose(log_file);
+}
+
 void log_write(char path[], char msg[]) {
 	FILE *log_file = fopen(path, "a");
 	fwrite(msg, strlen(msg), 1, log_file);

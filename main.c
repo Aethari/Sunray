@@ -48,6 +48,7 @@ int main(int arc, char *argv[]) {
 
 	log_init();
 	char *log_path = log_get_path();
+	log_clear(log_path);
 
 	// Initilize SDL
 	log_pwrite(log_path, "[ C ] [Core] Initializing SDL\n");
@@ -67,6 +68,10 @@ int main(int arc, char *argv[]) {
 		SDL_WINDOW_OPENGL
 	);
 	SDL_Renderer *rend = SDL_CreateRenderer(window, NULL);
+
+	// Lock the mouse
+	log_pwrite(log_path, "[ C ] [Core] Locking mouse\n");
+	SDL_SetWindowRelativeMouseMode(window, true);
 
 	// DEBUG - set the default map
 	int map[] = {
@@ -101,7 +106,7 @@ int main(int arc, char *argv[]) {
 	player_set_angle(0);
 	player_set_speed(4);
 	player_set_turnspeed(4);
-	player_set_fov(1.5708); // (in radians)
+	player_set_fov(1); // (in radians)
 
 	while(running) {
 		Uint64 frame_start = SDL_GetTicks();
