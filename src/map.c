@@ -8,7 +8,8 @@
 
 enum TileType {
 	TILE_EMPTY,
-	TILE_BRICK_WALL
+	TILE_BRICK_WALL,
+	TILE_INVISIBLE
 };
 
 int *map = NULL;
