@@ -18,13 +18,4 @@ void player_set_fov(float new_fov);
 /// Recieves all input events from SDL and decides what to do with them.
 bool player_handle_input(int dt);
 
-/// Casts a ray out
-/// Not to be confused with player_draw_cast(), which takes the data
-/// returned by this function and draws it on the screen
-void player_cast_ray(float angle, float *perp_wall_dist, float *wall_height);
-
-/// Draws the map from the player's perspective on the given SDL_Surface.
-/// Should be called at the end of the drawing loop
-void player_draw_cast(SDL_Renderer *rend);
-
 #endif

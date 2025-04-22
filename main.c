@@ -4,13 +4,10 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
-/// Access to the engine's log, located next to the engine's executable
 #include "log.h"
-
-/// Library functions for the game's map
-#include "map.h"
-
 #include "player.h"
+#include "map.h"
+#include "rays.h"
 
 /// How long a frame should be, in ms (16ms is 60 fps)
 #define FRAME_TARGET_TIME 16
@@ -37,7 +34,13 @@ void draw(SDL_Renderer *rend) {
 	SDL_SetRenderDrawColorFloat(rend, 0, 0, 0, 1);
 	SDL_RenderClear(rend);
 
-	player_draw_cast(rend);
+	ray_draw_cast(
+		rend,
+		player_get_fov(),
+		player_get_angle(),
+		player_get_pos_x(),
+		player_get_pos_y()
+	);
 
 	SDL_RenderPresent(rend);
 }
