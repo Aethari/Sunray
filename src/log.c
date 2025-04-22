@@ -1,3 +1,9 @@
+/*
+ * Creation and writing of log files
+ * See log.h for documentation
+ * 2025 DJaySky
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>

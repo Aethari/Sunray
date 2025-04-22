@@ -1,3 +1,8 @@
+/*
+ * Creation and writing of log files
+ * 2025 DJaySky
+ */
+
 #ifndef LOG_H
 #define LOG_H
 

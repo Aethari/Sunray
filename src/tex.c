@@ -1,3 +1,9 @@
+/*
+ * Various textures used throughout the game, and some helper functions
+ * See tex.h for documentation
+ * 2025 DJaySky
+ */
+
 #include "tex.h"
 
 // textures

@@ -1,3 +1,9 @@
+/*
+ * Casting primary and helper functions
+ * See rays.h for documentation
+ * 2025 DJaySky
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,7 +15,7 @@
 #include "map.h"
 #include "tex.h"
 
-void player_cast_ray(float *perp_wall_dist, float *wall_height, float angle, float x, float y) {
+int cast_ray(float *perp_wall_dist, float *wall_height, float angle, float x, float y) {
 	int map_x = floor(x);
 	int map_y = floor(y);
 
@@ -59,10 +65,8 @@ void player_cast_ray(float *perp_wall_dist, float *wall_height, float angle, flo
 			side = 1;
 		}
 
-		if(map_get(map_x, map_y) == 1) {
+		if(map_get(map_x, map_y) >= 1) {
 			hit = true;
-
-			// draw the brick texture
 		}
 	}
 
@@ -73,6 +77,8 @@ void player_cast_ray(float *perp_wall_dist, float *wall_height, float angle, flo
 	}
 
 	*wall_height = 300 / *perp_wall_dist;
+
+	return map_get(map_x, map_y);
 }
 
 void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y) {
@@ -102,7 +108,7 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 		float new_angle = angle - (fov / 2) + i * step;
 
 		float perp_wall_dist, wall_height;
-		player_cast_ray(&perp_wall_dist, &wall_height, new_angle, x, y);
+		TileType tile = (TileType) cast_ray(&perp_wall_dist, &wall_height, new_angle, x, y);
 
 		float corrected_dist = perp_wall_dist * cosf(new_angle - angle);
 		wall_height = height / corrected_dist;

@@ -1,3 +1,9 @@
+/*
+ * Definition and manipulation of the game's map
+ * See map.h for documentation
+ * 2025 DJaySky
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -5,12 +11,7 @@
 #include <math.h>
 
 #include "log.h"
-
-enum TileType {
-	TILE_EMPTY,
-	TILE_BRICK_WALL,
-	TILE_INVISIBLE
-};
+#include "map.h"
 
 int *map = NULL;
 int map_size_x, map_size_y;
@@ -48,7 +49,7 @@ void map_set(int value, int x, int y) {
 }
 
 bool map_check_pos(int pos_x, int pos_y) {
-	enum TileType tile = (enum TileType) map_get(pos_x, pos_y);
+	TileType tile = (TileType) map_get(pos_x, pos_y);
 
 	switch(tile) {
 		case TILE_EMPTY:
@@ -59,7 +60,7 @@ bool map_check_pos(int pos_x, int pos_y) {
 }
 
 bool map_check_dir(int pos_x, int pos_y, float dx, float dy) {
-	enum TileType tile = (enum TileType) map_get((int)(pos_x + dx), (int)(pos_y + dy));
+	TileType tile = (TileType) map_get((int)(pos_x + dx), (int)(pos_y + dy));
 
 	switch(tile) {
 		case TILE_EMPTY:

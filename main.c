@@ -1,3 +1,8 @@
+/*
+ * The main file, where SDL is started and the main loops run
+ * 2025 DJaySky
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 

@@ -1,3 +1,9 @@
+/*
+ * Variables and functions to manage the player
+ * See player.h for documentation
+ * 2025 DJaySky
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

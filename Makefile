@@ -1,3 +1,5 @@
+MAKEFLAGS += --no-print-directory
+
 # The C compiler to be used (i.e. gcc)
 CC=gcc
 CC_WIN=x86_64-w64-mingw32-gcc

@@ -1,3 +1,8 @@
+/*
+ * Various textures used throughout the game, and some helper functions
+ * 2025 DJaySky
+ */
+
 #ifndef TEX_H
 #define TEX_H
 

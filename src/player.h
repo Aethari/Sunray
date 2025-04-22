@@ -1,3 +1,8 @@
+/*
+ * Variables and functions to manage the player
+ * 2025 DJaySky
+ */
+
 #ifndef PLAYER_H
 #define PLAYER_H
 
