@@ -4,6 +4,8 @@
  * 2025 DJaySky
  */
 
+#include <stdlib.h>
+
 #include "tex.h"
 
 // textures

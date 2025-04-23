@@ -40,8 +40,8 @@ void map_change(int *new_map, int sx, int sy) {
 	free(log_path);
 }
 
-int map_get(int x, int y) {
-	return map[y * map_get_size_x() + x];
+TileType map_get(int x, int y) {
+	return (TileType)map[y * map_get_size_x() + x];
 }
 
 void map_set(int value, int x, int y) {

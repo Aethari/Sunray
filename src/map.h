@@ -30,7 +30,7 @@ void map_change(int *new_map, int sx, int sy);
 ///
 /// Parameters:
 /// - x,y: The coordinates of the tile to get
-int map_get(int x, int y);
+TileType map_get(int x, int y);
 
 /// Sets the value of a tile on the currently loaded map.
 ///

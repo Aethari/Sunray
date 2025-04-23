@@ -12,7 +12,11 @@
 // textures
 extern int brick_tex[TEX_HEIGHT][TEX_WIDTH];
 
-// Gets the given pixel from the given texture
+/// Gets the given pixel from the given texture
+///
+/// Parameters:
+/// - tex: The texture to get the pixel from
+/// - x, y: The coordinates of the piexel to get
 int tex_get_pix(int tex[TEX_HEIGHT][TEX_WIDTH], int x, int y);
 
 #endif

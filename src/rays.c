@@ -15,7 +15,7 @@
 #include "map.h"
 #include "tex.h"
 
-float cast_ray(float *perp_wall_dist, float *wall_height, float angle, float x, float y) {
+float ray_cast(float *perp_wall_dist, float *wall_height, float angle, float x, float y) {
 	int map_x = floor(x);
 	int map_y = floor(y);
 
@@ -114,7 +114,13 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 		float new_angle = angle - (fov / 2) + i * step;
 
 		float perp_wall_dist, wall_height;
-		TileType tile = (TileType) cast_ray(&perp_wall_dist, &wall_height, new_angle, x, y);
+
+		// tile is the coordinate on the wall that the ray hit
+		float tile = ray_cast(&perp_wall_dist, &wall_height, new_angle, x, y);
+
+		// the column of the texture to be pulled from
+		// remember - this is zero-indexed
+		int tex_x = tile * TEX_WIDTH;
 
 		float corrected_dist = perp_wall_dist * cosf(new_angle - angle);
 		wall_height = height / corrected_dist;
@@ -135,6 +141,24 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 		wall.h = scaled_height;
 
 		float new_color = floor(180 / (1 + corrected_dist / 4));
+
+		int map_x = floor(x);
+		int map_y = floor(y);
+
+		int (*tex)[TEX_WIDTH];
+
+		switch(map_get(map_x, map_y)) {
+			case TILE_BRICK_WALL:
+				tex = brick_tex;
+				break;
+			default:
+				break;
+		}
+
+		// loop through, from (bottom to top?) (top to bottom?) of the wall,
+		// sampling from the texture to decide which color to draw
+		for(int j = 0; j < wall_height; j++) {
+		}
 
 		SDL_SetRenderDrawColorFloat(rend, new_color/200, new_color/200, new_color/200, 1);
 		SDL_RenderFillRect(rend, &wall);
