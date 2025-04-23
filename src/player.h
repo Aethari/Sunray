@@ -21,6 +21,11 @@ void player_set_angle(float new_angle);
 void player_set_fov(float new_fov);
 
 /// Recieves all input events from SDL and decides what to do with them.
+/// Intended to be called from the game's update loop, which should 
+/// handle delta time.
+///
+/// Parameters:
+/// - dt: The deltatime from the game's update loop
 bool player_handle_input(int dt);
 
 #endif

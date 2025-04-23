@@ -16,12 +16,23 @@ void log_init();
 char *log_get_path();
 
 /// Clears the log file, sparing no content
+///
+/// Parameters:
+/// - path: A string representing a filepath to the log file
 void log_clear(char path[]);
 
 /// Writes a message to the log file
+///
+/// Parameters:
+/// - path: A string representing a filepath to the log file
+/// - msg: The message to be written to the log file
 void log_write(char path[], char msg[]);
 
-/// Writes a message to the log file and prints
+/// Writes a message to the log file and prints to the terminal
+///
+/// Parameters:
+/// - path: A string representing a filepath to the log file
+/// - msg: The message to be written to the log file and printed to the terminal
 void log_pwrite(char path[], char msg[]);
 
 #endif

@@ -15,7 +15,7 @@
 #include "map.h"
 #include "tex.h"
 
-int cast_ray(float *perp_wall_dist, float *wall_height, float angle, float x, float y) {
+float cast_ray(float *perp_wall_dist, float *wall_height, float angle, float x, float y) {
 	int map_x = floor(x);
 	int map_y = floor(y);
 
@@ -34,6 +34,8 @@ int cast_ray(float *perp_wall_dist, float *wall_height, float angle, float x, fl
 	//  distance from the player's position to the wall
 	float side_dist_x, side_dist_y;
 
+	float hit_pos = 0;
+	
 	if(ray_dir_x < 0) {
 		step_x = -1;
 		side_dist_x = (x-map_x) * dd_x;
@@ -72,13 +74,17 @@ int cast_ray(float *perp_wall_dist, float *wall_height, float angle, float x, fl
 
 	if(side == 0) {
 		*perp_wall_dist = (map_x - x + (1-step_x) / 2) / ray_dir_x;
+		hit_pos = y + *perp_wall_dist * ray_dir_y;
+		hit_pos -= floor(hit_pos);
 	} else {
 		*perp_wall_dist = (map_y - y + (1-step_y) / 2) / ray_dir_y;
+		hit_pos = x + *perp_wall_dist * ray_dir_x;
+		hit_pos -= floor(hit_pos);
 	}
 
 	*wall_height = 300 / *perp_wall_dist;
 
-	return map_get(map_x, map_y);
+	return hit_pos;
 }
 
 void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y) {
