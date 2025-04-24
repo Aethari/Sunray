@@ -142,11 +142,10 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 
 		float new_color = floor(180 / (1 + corrected_dist / 4));
 
-		int map_x = floor(x);
-		int map_y = floor(y);
+		int (*tex)[TEX_WIDTH] = NULL;
 
-		int (*tex)[TEX_WIDTH];
-
+		// instead of getting the player's position, it needs to be the 
+		// global point of collision with the wall
 		switch(map_get(map_x, map_y)) {
 			case TILE_BRICK_WALL:
 				tex = brick_tex;
@@ -157,7 +156,20 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 
 		// loop through, from (bottom to top?) (top to bottom?) of the wall,
 		// sampling from the texture to decide which color to draw
-		for(int j = 0; j < wall_height; j++) {
+		if(tex != NULL) {
+			for(int j = 0; j < wall_height; j++) {
+				// the segment/pixel on the wall
+				int seg = wall_height/j;
+
+				// the pixel y of the texture
+				int tex_y = 0;
+				tex_y = seg;
+
+				int color = tex_get_pix(tex, tex_x, tex_y);
+
+				printf("color: %d\n", color);
+				//SDL_SetRenderDrawColor(rend,
+			}
 		}
 
 		SDL_SetRenderDrawColorFloat(rend, new_color/200, new_color/200, new_color/200, 1);

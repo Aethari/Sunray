@@ -21,6 +21,6 @@ int brick_tex[TEX_HEIGHT][TEX_WIDTH] = {
 };
 
 // functions
-int tex_get_pix(int tex[TEX_HEIGHT][TEX_WIDTH], int x, int y) {
+int tex_get_pix(int (*tex)[TEX_WIDTH], int x, int y) {
 	return tex[y][x];
 }
