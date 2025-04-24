@@ -15,7 +15,7 @@
 #include "map.h"
 #include "tex.h"
 
-float ray_cast(float *perp_wall_dist, float *wall_height, float angle, float x, float y) {
+float ray_cast(float *perp_wall_dist, float *wall_height, float *hit_x, float *hit_y, float angle, float x, float y) {
 	int map_x = floor(x);
 	int map_y = floor(y);
 
@@ -113,10 +113,10 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 	for(int i = 0; i < rays; i++) {
 		float new_angle = angle - (fov / 2) + i * step;
 
-		float perp_wall_dist, wall_height;
+		float perp_wall_dist, wall_height, hit_x, hit_y;
 
 		// tile is the coordinate on the wall that the ray hit
-		float tile = ray_cast(&perp_wall_dist, &wall_height, new_angle, x, y);
+		float tile = ray_cast(&perp_wall_dist, &wall_height, &hit_x, &hit_y, new_angle, x, y);
 
 		// the column of the texture to be pulled from
 		// remember - this is zero-indexed
@@ -146,7 +146,7 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 
 		// instead of getting the player's position, it needs to be the 
 		// global point of collision with the wall
-		switch(map_get(map_x, map_y)) {
+		switch(map_get(hit_x, hit_y)) {
 			case TILE_BRICK_WALL:
 				tex = brick_tex;
 				break;

@@ -1,3 +1,4 @@
+# Hide "Entered directory" and "Exited directory" messages
 MAKEFLAGS += --no-print-directory
 
 # The C compiler to be used (i.e. gcc)
