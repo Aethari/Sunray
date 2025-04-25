@@ -10,6 +10,7 @@
 #define TEX_HEIGHT 8
 
 // textures
+extern int empty_tex[TEX_HEIGHT][TEX_WIDTH];
 extern int brick_tex[TEX_HEIGHT][TEX_WIDTH];
 
 /// Gets the given pixel from the given texture

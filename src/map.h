@@ -22,8 +22,8 @@ int map_get_size_y();
 ///
 /// Parameters:
 /// - new_map: A pointer to a integer array representing the new map
-/// - sx: The width of the new map
-/// - sy: The height of the new map
+/// - sx: 	   The width of the new map
+/// - sy: 	   The height of the new map
 void map_change(int *new_map, int sx, int sy);
 
 /// Gets the value of a tile on the currently loaded map.
@@ -36,7 +36,7 @@ TileType map_get(int x, int y);
 ///
 /// Parameters:
 /// - value: The new number for the tile
-/// - x, y: The coordinates of the tile to set
+/// - x, y:  The coordinates of the tile to set
 void map_set(int value, int x, int y);
 
 /// Checks collision from the given position.
@@ -50,9 +50,11 @@ bool map_check_pos(int pos_x, int pos_y);
 ///
 /// Parameters:
 /// - pos_x, pos_y: The coordinates of the central tile to be checked
-/// - dx, dy: The direction (distance) to check. Will be added to 
-/// 		  pos_x and pos_y
-/// Returns true if collision was found, false if not.
+/// - dx, dy: 		The direction (distance) to check. Will be added to 
+/// 		  		pos_x and pos_y
+///
+/// Returns:
+/// True if collision was found, false if not.
 bool map_check_dir(int pos_x, int pos_y, float dx, float dy);
 
 #endif

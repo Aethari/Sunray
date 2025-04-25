@@ -29,24 +29,24 @@ WIN_CFLAGS=-I src -I$(WIN_INCLUDEPATH) -L$(WIN_INCLUDEPATH) -lSDL3 -lm -Wall
 build-lnx:
 	@make clean
 	@mkdir build
-	@$(CC) ./*.c ./src/*.c $(LNX_CFLAGS) -o ./build/main
+	@$(CC) ./*.c ./src/*.c $(LNX_CFLAGS) -o ./build/sunray
 
 # Create a debug build targeted to linux (using build-lnx), then runs it
 test-lnx:
 	@make build-lnx
-	@./build/main
+	@./build/sunray
 
 # Create a debug build targeted to windows
 build-win:
 	@make clean
 	@mkdir build
 	@cp ./include/SDL3.dll ./build/SDL3.dll
-	@$(CC_WIN) ./*.c ./src/*.c $(WIN_CFLAGS) -o ./build/main.exe
+	@$(CC_WIN) ./*.c ./src/*.c $(WIN_CFLAGS) -o ./build/sunray.exe
 
 # Create a debug build targeted to windows (using build-win), then runs it
 test-win:
 	@make build-win
-	@./build/main.exe
+	@./build/sunray.exe
 
 # Removes the build directory
 clean:

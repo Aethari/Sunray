@@ -82,6 +82,9 @@ float ray_cast(float *perp_wall_dist, float *wall_height, float *hit_x, float *h
 		hit_pos -= floor(hit_pos);
 	}
 
+	*hit_x = x + ray_dir_x * *perp_wall_dist;
+	*hit_y = y + ray_dir_y * *perp_wall_dist;
+
 	*wall_height = 300 / *perp_wall_dist;
 
 	return hit_pos;
@@ -144,13 +147,14 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 
 		int (*tex)[TEX_WIDTH] = NULL;
 
-		// instead of getting the player's position, it needs to be the 
-		// global point of collision with the wall
-		switch(map_get(hit_x, hit_y)) {
+		printf("wall hit: %f, %f\n", hit_x, hit_y);
+
+		switch(map_get((int)hit_x, (int)hit_y)) {
 			case TILE_BRICK_WALL:
 				tex = brick_tex;
 				break;
 			default:
+				tex = empty_tex;
 				break;
 		}
 
