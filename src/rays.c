@@ -147,9 +147,12 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 
 		int (*tex)[TEX_WIDTH] = NULL;
 
-		printf("wall hit: %f, %f\n", hit_x, hit_y);
+		// for some reason these are always increasing as time goes on
+		// it doesn't seem to be based on the player
+		int tile_x = (int)floor(hit_x);
+		int tile_y = (int)floor(hit_y);
 
-		switch(map_get((int)hit_x, (int)hit_y)) {
+		switch(map_get(tile_x, tile_y)) {
 			case TILE_BRICK_WALL:
 				tex = brick_tex;
 				break;
@@ -169,10 +172,26 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 				int tex_y = 0;
 				tex_y = seg;
 
-				int color = tex_get_pix(tex, tex_x, tex_y);
+				// this IS working now - but some coords are OOB
+				Color color = tex_get_pix(tex, tex_x, tex_y);
 
-				printf("color: %d\n", color);
-				//SDL_SetRenderDrawColor(rend,
+				float r, g, b;
+
+				switch(color) {
+					case WHITE:
+						r = 1;
+						g = 1;
+						b = 1;
+						break;
+					default:
+						r = 0;
+						g = 0;
+						b = 0;
+						break;
+				}
+
+				// needs adjusted for distance
+				//SDL_SetRenderDrawColorFloat(rend, r, g, b);
 			}
 		}
 

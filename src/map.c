@@ -41,24 +41,29 @@ void map_change(int *new_map, int sx, int sy) {
 }
 
 TileType map_get(int x, int y) {
+	char *log_path = log_get_path();
+
+	if(map == NULL) {
+		printf("[ C ] [WARNING] Map is NULL in map_get()\n");
+		return TILE_EMPTY;
+	}
+
 	if(
 		x >= 0 &&
-		x <= map_get_size_x() &&
+		x < map_get_size_x() &&
 		y >= 0 &&
-		y <= map_get_size_y()
+		y < map_get_size_y()
 	) {
+		free(log_path);
 		return (TileType)map[y * map_get_size_x() + x];
 	} else {
-		char *log_path = log_get_path();
-
 		char msg[1000];
-		char buff[] = "[ C ] [ERROR] Map tile (%d, %d) out of bounds in map_get()\n";
+		char buff[] = "[ C ] [WARNING] Map tile (%d, %d) out of bounds in map_get()\n";
 		sprintf(msg, buff, x, y);
 
 		log_pwrite(log_path, msg);
 
 		free(log_path);
-
 		return TILE_EMPTY;
 	}
 }
@@ -68,7 +73,7 @@ void map_set(int value, int x, int y) {
 }
 
 bool map_check_pos(int pos_x, int pos_y) {
-	TileType tile = (TileType) map_get(pos_x, pos_y);
+	TileType tile = (TileType)map_get(pos_x, pos_y);
 
 	switch(tile) {
 		case TILE_EMPTY:
@@ -79,7 +84,7 @@ bool map_check_pos(int pos_x, int pos_y) {
 }
 
 bool map_check_dir(int pos_x, int pos_y, float dx, float dy) {
-	TileType tile = (TileType) map_get((int)(pos_x + dx), (int)(pos_y + dy));
+	TileType tile = (TileType)map_get((int)(pos_x + dx), (int)(pos_y + dy));
 
 	switch(tile) {
 		case TILE_EMPTY:

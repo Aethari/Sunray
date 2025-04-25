@@ -1,6 +1,10 @@
 /*
  * Definition and manipulation of the game's map
  * 2025 DJaySky
+ *
+ * Some notes about maps:
+ * - There can only ever be one map loaded at any given time
+ *   - Other maps can (obviously) be stored in variables
  */
 
 #ifndef MAP_H

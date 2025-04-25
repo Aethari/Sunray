@@ -133,8 +133,10 @@ int main(int arc, char *argv[]) {
 		}
 	}
 
+	log_pwrite(log_path, "[ C ] [Core] Freeing memory\n");
 	log_pwrite(log_path, "[ C ] [Core] Shutting down\n");
 	free(log_path);
+
 
 	SDL_DestroyWindow(window);
 	SDL_Quit();
