@@ -13,6 +13,7 @@
 typedef enum {
 	TILE_EMPTY,
 	TILE_BRICK_WALL,
+	TILE_DEBUG,
 	TILE_INVISIBLE
 } TileType;
 

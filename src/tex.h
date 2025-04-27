@@ -6,17 +6,19 @@
 #ifndef TEX_H
 #define TEX_H
 
-#define TEX_WIDTH 8
-#define TEX_HEIGHT 8
+#define TEX_WIDTH 16
+#define TEX_HEIGHT 16
 
 typedef enum {
 	BLACK,
-	WHITE
+	WHITE,
+	GRAY
 } Color;
 
 // textures
 extern int empty_tex[TEX_HEIGHT][TEX_WIDTH];
 extern int brick_tex[TEX_HEIGHT][TEX_WIDTH];
+extern int debug_tex[TEX_HEIGHT][TEX_WIDTH];
 
 /// Gets the given pixel from the given texture
 ///

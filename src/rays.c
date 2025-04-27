@@ -15,7 +15,7 @@
 #include "map.h"
 #include "tex.h"
 
-float ray_cast(float *perp_wall_dist, float *wall_height, float *hit_x, float *hit_y, float angle, float x, float y) {
+float ray_cast(float *perp_wall_dist, float *wall_height, float *hit_x, float *hit_y, float *out_map_x, float *out_map_y, float angle, float x, float y) {
 	int map_x = floor(x);
 	int map_y = floor(y);
 
@@ -57,7 +57,7 @@ float ray_cast(float *perp_wall_dist, float *wall_height, float *hit_x, float *h
 
 	while(!hit) {
 		// get which wall is closer and move ray along the closer wall
-		if(side_dist_x < side_dist_y) {
+		if(side_dist_x <= side_dist_y) {
 			side_dist_x = side_dist_x + dd_x;
 			map_x = map_x + step_x;
 			side = 0;
@@ -76,14 +76,27 @@ float ray_cast(float *perp_wall_dist, float *wall_height, float *hit_x, float *h
 		*perp_wall_dist = (map_x - x + (1-step_x) / 2) / ray_dir_x;
 		hit_pos = y + *perp_wall_dist * ray_dir_y;
 		hit_pos -= floor(hit_pos);
+
+		if(ray_dir_x > 0) hit_pos = 1 - hit_pos;
+
+		if(hit_pos >= 1) hit_pos = nextafter(1, 0);
+		if(hit_pos < 0) hit_pos = 0;
 	} else {
 		*perp_wall_dist = (map_y - y + (1-step_y) / 2) / ray_dir_y;
 		hit_pos = x + *perp_wall_dist * ray_dir_x;
 		hit_pos -= floor(hit_pos);
+
+		if(ray_dir_y < 0) hit_pos = 1 - hit_pos;
+
+		if(hit_pos >= 1) hit_pos = nextafter(1, 0);
+		if(hit_pos < 0) hit_pos = 0;
 	}
 
 	*hit_x = x + ray_dir_x * *perp_wall_dist;
 	*hit_y = y + ray_dir_y * *perp_wall_dist;
+
+	*out_map_x = map_x;
+	*out_map_y = map_y;
 
 	*wall_height = 300 / *perp_wall_dist;
 
@@ -95,7 +108,8 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 	SDL_GetRenderOutputSize(rend, &width, &height);
 
 	// the amount of rays to be cast (columns on the screen)
-	int rays = 150;
+	// 150 is good for a pixelated look, but has some rendering issues
+	int rays = width;
 
 	// the width of each column
 	float slice_width = (float)width / rays;
@@ -116,65 +130,50 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 	for(int i = 0; i < rays; i++) {
 		float new_angle = angle - (fov / 2) + i * step;
 
-		float perp_wall_dist, wall_height, hit_x, hit_y;
+		float perp_wall_dist, wall_height, hit_x, hit_y, map_x, map_y, side;
 
 		// tile is the coordinate on the wall that the ray hit
-		float tile = ray_cast(&perp_wall_dist, &wall_height, &hit_x, &hit_y, new_angle, x, y);
+		float tile = ray_cast(&perp_wall_dist, &wall_height, &hit_x, &hit_y, &map_x, &map_y, new_angle, x, y);
 
 		// the column of the texture to be pulled from
-		// remember - this is zero-indexed
 		int tex_x = tile * TEX_WIDTH;
+
+		if(tex_x < 0) {
+			tex_x = 0;
+		} else if(tex_x >= TEX_WIDTH) {
+			tex_x = TEX_WIDTH - 1;
+		}
 
 		float corrected_dist = perp_wall_dist * cosf(new_angle - angle);
 		wall_height = height / corrected_dist;
 
 		int scaled_height;
-		if(height < wall_height) {
-			scaled_height = height;
-		} else {
-			scaled_height = wall_height;
-		}
+		scaled_height = wall_height;
 
 		int y_pos = (height/2) - (scaled_height/2);
 
-		SDL_FRect wall;
-		wall.x = i*slice_width;
-		wall.y = y_pos;
-		wall.w = slice_width;
-		wall.h = scaled_height;
-
-		float new_color = floor(180 / (1 + corrected_dist / 4));
-
 		int (*tex)[TEX_WIDTH] = NULL;
 
-		// for some reason these are always increasing as time goes on
-		// it doesn't seem to be based on the player
-		int tile_x = (int)floor(hit_x);
-		int tile_y = (int)floor(hit_y);
-
-		switch(map_get(tile_x, tile_y)) {
+		switch(map_get(map_x, map_y)) {
 			case TILE_BRICK_WALL:
 				tex = brick_tex;
+				break;
+			case TILE_DEBUG:
+				tex = debug_tex;
 				break;
 			default:
 				tex = empty_tex;
 				break;
 		}
 
-		// loop through, from (bottom to top?) (top to bottom?) of the wall,
-		// sampling from the texture to decide which color to draw
+		// loop through the wall slice, sampling the texture to
+		// draw on the wall
 		if(tex != NULL) {
-			for(int j = 0; j < wall_height; j++) {
-				// the segment/pixel on the wall
-				int seg = wall_height/j;
+			// how big the pixels need to be on the wall
+			float scale = scaled_height / (float)TEX_HEIGHT;
 
-				// the pixel y of the texture
-				int tex_y = 0;
-				tex_y = seg;
-
-				// this IS working now - but some coords are OOB
+			for(int tex_y = 0; tex_y < TEX_HEIGHT; tex_y++) {
 				Color color = tex_get_pix(tex, tex_x, tex_y);
-
 				float r, g, b;
 
 				switch(color) {
@@ -190,12 +189,18 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 						break;
 				}
 
-				// needs adjusted for distance
-				//SDL_SetRenderDrawColorFloat(rend, r, g, b);
+				float new_color = floor(180 / (1 + corrected_dist / 4));
+				float brightness = new_color / 200;
+
+				SDL_FRect wall;
+				wall.x = i*slice_width;
+				wall.y = y_pos + tex_y * scale;
+				wall.w = slice_width;
+				wall.h = scale;
+
+				SDL_SetRenderDrawColorFloat(rend, r * brightness, g * brightness, b * brightness, 1);
+				SDL_RenderFillRect(rend, &wall);
 			}
 		}
-
-		SDL_SetRenderDrawColorFloat(rend, new_color/200, new_color/200, new_color/200, 1);
-		SDL_RenderFillRect(rend, &wall);
 	}
 }
