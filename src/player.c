@@ -11,9 +11,9 @@
 
 #include <SDL3/SDL.h>
 
-#include "log.h"
-#include "map.h"
-#include "tex.h"
+#include "util/log.h"
+#include "util/map.h"
+#include "assets/tex.h"
 
 #define WALL_COLLISION_DISTANCE .2
 

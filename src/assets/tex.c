@@ -7,8 +7,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "log.h"
-#include "tex.h"
+#include "util/log.h"
+#include "assets/tex.h"
 
 // textures
 int empty_tex[TEX_HEIGHT][TEX_WIDTH] = {

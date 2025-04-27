@@ -9,10 +9,12 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
 
-#include "log.h"
+#include "util/log.h"
+#include "util/map.h"
+#include "util/rays.h"
+
+#include "luaE.h"
 #include "player.h"
-#include "map.h"
-#include "rays.h"
 
 /// How long a frame should be, in ms (16ms is 60 fps)
 #define FRAME_TARGET_TIME 16
@@ -57,6 +59,18 @@ int main(int arc, char *argv[]) {
 	log_init();
 	char *log_path = log_get_path();
 	log_clear(log_path);
+
+	// DEBUG - test Lua
+	luaE_dostring("print('Hello from Lua!')");
+
+	char *exe_path = SDL_GetBasePath();
+	strcat(exe_path, "%s");
+
+	char file[1000];
+	char buff[] = "scripts/test.lua";
+	sprintf(file, exe_path, buff);
+
+	luaE_dofile(file);
 
 	// Initilize SDL
 	log_pwrite(log_path, "[ C ] [Core] Initializing SDL\n");
@@ -105,7 +119,7 @@ int main(int arc, char *argv[]) {
 		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 	};
 	map_change(map, 20, 20);
-	
+
 	// Main game loop
 	log_pwrite(log_path, "[ C ] [Core] Starting main game loop\n");
 
@@ -114,7 +128,7 @@ int main(int arc, char *argv[]) {
 	player_set_angle(0);
 	player_set_speed(4);
 	player_set_turnspeed(4);
-	player_set_fov(1); // (in radians)
+	player_set_fov(1.22173); // (in radians)
 
 	while(running) {
 		Uint64 frame_start = SDL_GetTicks();

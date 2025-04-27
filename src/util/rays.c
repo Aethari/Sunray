@@ -11,9 +11,9 @@
 
 #include <SDL3/SDL.h>
 
-#include "log.h"
-#include "map.h"
-#include "tex.h"
+#include "util/log.h"
+#include "util/map.h"
+#include "assets/tex.h"
 
 float ray_cast(float *perp_wall_dist, float *wall_height, float *hit_x, float *hit_y, float *out_map_x, float *out_map_y, float angle, float x, float y) {
 	int map_x = floor(x);
@@ -130,7 +130,7 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 	for(int i = 0; i < rays; i++) {
 		float new_angle = angle - (fov / 2) + i * step;
 
-		float perp_wall_dist, wall_height, hit_x, hit_y, map_x, map_y, side;
+		float perp_wall_dist, wall_height, hit_x, hit_y, map_x, map_y;
 
 		// tile is the coordinate on the wall that the ray hit
 		float tile = ray_cast(&perp_wall_dist, &wall_height, &hit_x, &hit_y, &map_x, &map_y, new_angle, x, y);
