@@ -43,5 +43,5 @@ what the folders are for.
 
 [scripts](src/scripts/): Contains various Lua scripts used by the engine.  
 
-[util](src/util/): Contains various engine utility folders that aren't 
-                   bound to use in one specific header.
+[util](src/util/): Contains various engine utility folders that are 
+                   usually used by multiple headers.
