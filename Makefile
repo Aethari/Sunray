@@ -23,12 +23,12 @@ LNX_CFLAGS=-I src -I$(LNX_INCLUDEPATH) -L$(LNX_INCLUDEPATH) -llua5.4 -lSDL3 -lm 
 
 # The windows path to a parent include directory - for this project, contains
 # a "lua5.4" folder with Lua 5.4 headers, and an "SDL3" folder with SDL headers
-# The parent directory should also include a library file (.dll) for each
+# The parent directory should also include a library file (.dll, .a) for each
 # header folder.
 WIN_INCLUDEPATH=C:/Include/
 
 # Build flags for windows - missing lua at the moment
-WIN_CFLAGS=-I src -I$(WIN_INCLUDEPATH) -L$(WIN_INCLUDEPATH) -llua5.4 -lSDL3 -lm -Wall
+WIN_CFLAGS=-I src -I$(WIN_INCLUDEPATH) -L$(WIN_INCLUDEPATH) -l:lua5.4.a -lSDL3 -lm -Wall
 
 # Create a debug build targeted to linux
 build-lnx:
