@@ -33,6 +33,9 @@ the header (.h) file. Just in case, however, they are also documented here.
 [rays.h](src/util/rays.h): One of the most important headers in the repo. 
                        Provides the ability to cast rays and draw from
                        a perspective.  
+
+[lfuncs.h](src/lfuncs.h): Redefines engine C functions so that they can be 
+                       bound to Lua.
 ### Folders:
 Headers are organized into a variety of folders, whose purpose might not
 be quickly reconizable. As such, I have provided documentation here for

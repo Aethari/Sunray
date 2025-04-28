@@ -14,6 +14,7 @@
 #include <lua5.4/lualib.h>
 
 #include "util/log.h"
+#include "lfuncs.h"
 
 lua_State *luaE_new() {
 	char *log_path = log_get_path();
@@ -22,6 +23,129 @@ lua_State *luaE_new() {
 
 	lua_State *L = luaL_newstate();
 	luaL_openlibs(L);
+
+	// Engine
+	lua_newtable(L);
+
+	// Engine.log
+	lua_pushstring(L, "log");
+	lua_newtable(L);
+
+	// log.get_path()
+	lua_pushstring(L, "get_path");
+	lua_pushcfunction(L, l_log_get_path);
+	lua_settable(L, -3);
+
+	// log.clear()
+	lua_pushstring(L, "clear");
+	lua_pushcfunction(L, l_log_clear);
+	lua_settable(L, -3);
+
+	// log.write()
+	lua_pushstring(L, "write");
+	lua_pushcfunction(L, l_log_write);
+	lua_settable(L, -3);
+
+	// log.pwrite()
+	lua_pushstring(L, "pwrite");
+	lua_pushcfunction(L, l_log_pwrite);
+	lua_settable(L, -3);
+
+	lua_settable(L, -3);
+
+	// Engine.map
+	lua_pushstring(L, "map");
+	lua_newtable(L);
+
+	// map.get()
+	lua_pushstring(L, "get");
+	lua_pushcfunction(L, l_map_get);
+	lua_settable(L, -3);
+
+	// map.set()
+	lua_pushstring(L, "set");
+	lua_pushcfunction(L, l_map_set);
+	lua_settable(L, -3);
+
+	// map.check()
+	lua_pushstring(L, "check");
+	lua_pushcfunction(L, l_map_check_pos);
+	lua_settable(L, -3);
+
+	// map.check_dir()
+	lua_pushstring(L, "check_dir");
+	lua_pushcfunction(L, l_map_check_dir);
+	lua_settable(L, -3);
+
+	lua_settable(L, -3);
+
+	// Engine.player
+	lua_pushstring(L, "player");
+	lua_newtable(L);
+
+	// player.get_x()
+	lua_pushstring(L, "get_x");
+	lua_pushcfunction(L, l_player_get_x);
+	lua_settable(L, -3);
+
+	// player.get_y()
+	lua_pushstring(L, "get_y");
+	lua_pushcfunction(L, l_player_get_y);
+	lua_settable(L, -3);
+
+	// player.get_speed()
+	lua_pushstring(L, "get_speed");
+	lua_pushcfunction(L, l_player_get_speed);
+	lua_settable(L, -3);
+
+	// player.get_turnspeed()
+	lua_pushstring(L, "get_turnspeed");
+	lua_pushcfunction(L, l_player_get_turnspeed);
+	lua_settable(L, -3);
+
+	// player.get_angle()
+	lua_pushstring(L, "get_angle");
+	lua_pushcfunction(L, l_player_get_angle);
+	lua_settable(L, -3);
+
+	// player.get_fov()
+	lua_pushstring(L, "get_fov");
+	lua_pushcfunction(L, l_player_get_fov);
+	lua_settable(L, -3);
+
+	// player.set_x()
+	lua_pushstring(L, "set_x");
+	lua_pushcfunction(L, l_player_set_x);
+	lua_settable(L, -3);
+
+	// player.set_y()
+	lua_pushstring(L, "set_y");
+	lua_pushcfunction(L, l_player_set_y);
+	lua_settable(L, -3);
+
+	// player.set_speed()
+	lua_pushstring(L, "set_speed");
+	lua_pushcfunction(L, l_player_set_speed);
+	lua_settable(L, -3);
+
+	// player.set_turnspeed()
+	lua_pushstring(L, "set_turnspeed");
+	lua_pushcfunction(L, l_player_set_turnspeed);
+	lua_settable(L, -3);
+
+	// player.set_angle()
+	lua_pushstring(L, "set_angle");
+	lua_pushcfunction(L, l_player_set_angle);
+	lua_settable(L, -3);
+
+	// player.set_fov()
+	lua_pushstring(L, "set_fov");
+	lua_pushcfunction(L, l_player_set_fov);
+	lua_settable(L, -3);
+
+	lua_settable(L, -3);
+
+	lua_setglobal(L, "Engine");
 
 	free(log_path);
 	return L;

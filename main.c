@@ -60,18 +60,6 @@ int main(int arc, char *argv[]) {
 	char *log_path = log_get_path();
 	log_clear(log_path);
 
-	// DEBUG - test Lua
-	luaE_dostring("print('Hello from Lua!')");
-
-	char *exe_path = SDL_GetBasePath();
-	strcat(exe_path, "%s");
-
-	char file[1000];
-	char buff[] = "scripts/test.lua";
-	sprintf(file, exe_path, buff);
-
-	luaE_dofile(file);
-
 	// Initilize SDL
 	log_pwrite(log_path, "[ C ] [Core] Initializing SDL\n");
 	SDL_Init(
@@ -89,7 +77,7 @@ int main(int arc, char *argv[]) {
 		900, 
 		SDL_WINDOW_OPENGL
 	);
-	SDL_Renderer *rend = SDL_CreateRenderer(window, NULL);
+	SDL_Renderer *rend = SDL_CreateRenderer(window, "opengl");
 
 	// Lock the mouse
 	log_pwrite(log_path, "[ C ] [Core] Locking mouse\n");

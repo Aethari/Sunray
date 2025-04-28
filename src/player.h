@@ -3,6 +3,8 @@
  * 2025 DJaySky
  */
 
+#include <stdbool.h>
+
 #ifndef PLAYER_H
 #define PLAYER_H
 
