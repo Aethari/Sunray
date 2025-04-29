@@ -7,7 +7,7 @@
  * along with the existing C API's naming conventions of "lua"
  * with a capital letter appended.
  *
- * "luaE" stands for "lua Engine"
+ * "luaE" stands for "Lua Engine"
  */
 
 #include <lua5.4/lua.h>
