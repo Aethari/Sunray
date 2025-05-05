@@ -14,8 +14,8 @@ the header (.h) file. Just in case, however, they are also documented here.
                   runs the executable.  
 
 [player.h](src/player.h): The player. Very few headers outside of the main file
-                      should access the code in here. Handles all of the
-                      game's input.  
+                      should access the code in here. Also handles all of the
+                      game's input while not in the menus.  
 
 [luaE.h](src/luaE.h): A simple Lua interface for the engine. `luaE` stands for 
                   "Lua Engine"  
@@ -34,8 +34,13 @@ the header (.h) file. Just in case, however, they are also documented here.
                        Provides the ability to cast rays and draw from
                        a perspective.  
 
+[page.h](src/util/page.h): Handles the currently loaded screen/page. This
+                           does **not** handle drawing or updating of the
+                           pages.
+
 [lfuncs.h](src/lfuncs.h): Redefines engine C functions so that they can be 
                        bound to Lua.
+
 ### Folders:
 Headers are organized into a variety of folders, whose purpose might not
 be quickly reconizable. As such, I have provided documentation here for
@@ -48,3 +53,6 @@ what the folders are for.
 
 [util](src/util/): Contains various engine utility folders that are 
                    usually used by multiple headers.
+
+[pages](src/pages/): Contains drawing, update, and other such functionality
+                     for several of the game's pages.

@@ -11,10 +11,13 @@
 
 #include "util/log.h"
 #include "util/map.h"
+#include "util/page.h"
 #include "util/rays.h"
 
-#include "luaE.h"
+#include "pages/main_menu.h"
 #include "player.h"
+
+#include "luaE.h"
 
 /// How long a frame should be, in ms (16ms is 60 fps)
 #define FRAME_TARGET_TIME 16
@@ -111,6 +114,8 @@ int main(int arc, char *argv[]) {
 	// Main game loop
 	log_pwrite(log_path, "[ C ] [Core] Starting main game loop\n");
 
+	page_set_name("Main Menu");
+
 	player_set_pos_x(1.5);
 	player_set_pos_y(1.5);
 	player_set_angle(0);
@@ -119,20 +124,39 @@ int main(int arc, char *argv[]) {
 	player_set_fov(1.22173); // (in radians)
 
 	while(running) {
-		Uint64 frame_start = SDL_GetTicks();
+		char *page_name = page_get_name();
+		
+		if(strcmp(page_name, "Game") == 0) {
+			Uint64 frame_start = SDL_GetTicks();
 
-		// Update game state
-		running = update();
+			// Update game state
+			running = update();
 
-		// Draw to the screen
-		draw(rend);
+			// Draw to the screen
+			draw(rend);
 
-		// Lock processing to FRAME_TARGET_TIME ms per frame
-		// was a neccesary step for delta time to work
-		Uint64 frame_time = SDL_GetTicks() - frame_start;
-		if(frame_time < FRAME_TARGET_TIME) {
-			SDL_Delay(FRAME_TARGET_TIME - frame_time);
+			// Lock processing to FRAME_TARGET_TIME ms per frame
+			// was a neccesary step for delta time to work
+			Uint64 frame_time = SDL_GetTicks() - frame_start;
+			if(frame_time < FRAME_TARGET_TIME) {
+				SDL_Delay(FRAME_TARGET_TIME - frame_time);
+			}
+		} else if(strcmp(page_name, "Main Menu") == 0) {
+			// Update menu state
+			running = main_menu_update();
+
+			// Draw main menu
+			main_menu_draw(rend);
+		} else {
+			char msg[1000];
+			char buff[] = "[ C ] [Error] Page \"%s\" not found\n";
+			sprintf(msg, buff, page_name);
+
+			log_pwrite(log_path, msg);
+			exit(0);
 		}
+
+		free(page_name);
 	}
 
 	log_pwrite(log_path, "[ C ] [Core] Freeing memory\n");

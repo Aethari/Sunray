@@ -86,13 +86,11 @@ bool player_handle_input(float dt) {
 	// listen for keys
 	const bool *keys = SDL_GetKeyboardState(NULL);
 
-	// collision (kind of, almost) works, but instead of checking absolute directions,
-	// we need to check the direction the player is trying to move (using trig and stuff)
-
 	// forwards and backwards
 	if(
 		keys[SDL_SCANCODE_W] ||
-		keys[SDL_SCANCODE_UP]
+		keys[SDL_SCANCODE_UP] ||
+		keys[SDL_SCANCODE_I]
 	) {
 		int pos_x = player_get_pos_x() + cos(player_get_angle()) * WALL_COLLISION_DISTANCE;
 		int pos_y = player_get_pos_y() + sin(player_get_angle()) * WALL_COLLISION_DISTANCE;
@@ -103,7 +101,8 @@ bool player_handle_input(float dt) {
 		}
 	} else if(
 		keys[SDL_SCANCODE_S] ||
-		keys[SDL_SCANCODE_DOWN]
+		keys[SDL_SCANCODE_DOWN] ||
+		keys[SDL_SCANCODE_K]
 	) {
 		int pos_x = player_get_pos_x() - cos(player_get_angle()) * WALL_COLLISION_DISTANCE;
 		int pos_y = player_get_pos_y() - sin(player_get_angle()) * WALL_COLLISION_DISTANCE;

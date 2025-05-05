@@ -8,7 +8,8 @@ CC_WIN=x86_64-w64-mingw32-gcc
 SRCS = main.c \
 	   src/*.c \
 	   src/util/*.c \
-	   src/assets/*.c
+	   src/assets/*.c \
+	   src/pages/*.c
 
 # Anytime a path variable is declared here, it should always have a / at the end
 
@@ -47,7 +48,7 @@ build-win:
 	@make clean
 	@mkdir build
 	@cp -R ./src/scripts ./build/
-	@cp ./include/SDL3.dll ./build/SDL3.dll
+	@cp ./lib/SDL3.dll ./build/SDL3.dll
 	@$(CC_WIN) $(SRCS) $(WIN_CFLAGS) -o ./build/sunray.exe
 
 # Create a debug build targeted to windows (using build-win), then runs it
