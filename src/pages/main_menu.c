@@ -85,12 +85,15 @@ void main_menu_draw(SDL_Renderer *rend) {
 	int w, h;
 	SDL_GetRenderOutputSize(rend, &w, &h);
 
+	SDL_SetRenderDrawColorFloat(rend, 0, 0, 0, 1);
+	SDL_RenderClear(rend);
+
 	struct MenuItem start_game;
 	start_game.index = 0;
 	strcpy(start_game.text, "Start Game");
 
 	start_game.rect.w = 300;
-	start_game.rect.h = 150;
+	start_game.rect.h = 75;
 	start_game.rect.x = (w/2) - (start_game.rect.w/2);
 	start_game.rect.y = (h/2) - start_game.rect.h - 10;
 
@@ -98,4 +101,6 @@ void main_menu_draw(SDL_Renderer *rend) {
 	SDL_FRect *rect;
 	rect = &start_game.rect;
 	SDL_RenderFillRect(rend, rect);
+
+	SDL_RenderPresent(rend);
 }
