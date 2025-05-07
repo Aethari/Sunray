@@ -10,7 +10,7 @@
  * "luaE" stands for "Lua Engine"
  */
 
-#include <lua5.4/lua.h>
+#include <lua.h>
 
 #ifndef LUAE_H
 #define LUAE_H
