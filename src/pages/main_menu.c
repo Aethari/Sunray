@@ -16,6 +16,7 @@
 #include "util/font.h"
 #include "util/page.h"
 
+#define MENU_ITEM_COUNT 2
 #define MENU_MAX_TEXT_LEN 2048
 
 int menu_index = 0;
@@ -27,6 +28,11 @@ struct MenuItem {
 	int index;
 	char text[MENU_MAX_TEXT_LEN];
 	SDL_FRect rect;
+};
+
+struct MenuItem menu_items[MENU_ITEM_COUNT] = {
+	{0, "Start Game", {0}},
+	{1, "Quit Game", {0}}
 };
 
 bool main_menu_update() {
@@ -64,10 +70,7 @@ bool main_menu_update() {
 				page_set_name("Game");
 				break;
 			case 1:
-				// run item 1
-				// find a way to stop the game loop - 
-				// create a function in main that sets running to false
-				break;
+				return false;
 			default:
 				char *log_path = log_get_path();
 
@@ -80,6 +83,10 @@ bool main_menu_update() {
 				free(log_path);
 				break;
 		}
+	} else if(
+		keys[SDL_SCANCODE_ESCAPE]
+	) {
+		return false;
 	}
 
 	return true;
@@ -91,51 +98,40 @@ void main_menu_draw(SDL_Renderer *rend) {
 
 	SDL_SetRenderDrawColorFloat(rend, 0, 0, 0, 1);
 	SDL_RenderClear(rend);
-
-	struct MenuItem start_game;
-	start_game.index = 0;
-	strcpy(start_game.text, "Start Game");
-
-	struct MenuItem quit_game;
-	quit_game.index = 1;
-	strcpy(quit_game.text, "Quit Game");
-
-	start_game.rect.w = 300;
-	start_game.rect.h = 75;
-	start_game.rect.x = (w/2) - (start_game.rect.w/2);
-	start_game.rect.y = (h/2) - start_game.rect.h;
-
-	quit_game.rect.w = 300;
-	quit_game.rect.h = 75;
-	quit_game.rect.x = (w/2) - (quit_game.rect.w/2);
-	quit_game.rect.y = (h/2) + quit_game.rect.h;
-
-	SDL_SetRenderDrawColorFloat(rend, 1, 1, 1, 1);
-	SDL_FRect *rect;
-
-	rect = &start_game.rect;
-	if(menu_index == start_game.index) {
-		SDL_SetRenderDrawColorFloat(rend, .12, .12, .12, 1);
-		SDL_RenderFillRect(rend, rect);
+	
+	for (int i = 0; i < MENU_ITEM_COUNT; i++) {
+		menu_items[i].rect.w = 300;
+		menu_items[i].rect.h = 75;
+		menu_items[i].rect.x = (w/2) - (menu_items[i].rect.w/2);
+		menu_items[i].rect.y = (h/2) - 100 + (i * 150);
 	}
-	SDL_SetRenderDrawColorFloat(rend, 1, 1, 1, 1);
-	SDL_RenderRect(rend, rect);
 
 	TTF_TextEngine *eng = TTF_CreateRendererTextEngine(rend);
-	TTF_Text *text_rend = TTF_CreateText(eng, font_get(), start_game.text, strlen(start_game.text));
-	
-	TTF_SetTextColorFloat(text_rend, 1, 1, 1, 1);
-	TTF_DrawRendererText(text_rend, 10, 10);
+	TTF_SetFontSize(font_get(), 40);
 
-	printf("Error: %s\n", SDL_GetError());
+	for(int i = 0; i < MENU_ITEM_COUNT; i++) {
+		struct MenuItem item = menu_items[i];
+		SDL_FRect *rect = &item.rect;
+		
+		if(menu_index == item.index) {
+			SDL_SetRenderDrawColorFloat(rend, .12, .12, .12, 1);
+			SDL_RenderFillRect(rend, rect);
+		}
 
-	rect = &quit_game.rect;
-	if(menu_index == quit_game.index) {
-		SDL_SetRenderDrawColorFloat(rend, .12, .12, .12, 1);
-		SDL_RenderFillRect(rend, rect);
+		SDL_SetRenderDrawColorFloat(rend, 1, 1, 1, 1);
+		SDL_RenderRect(rend, rect);
+
+		TTF_Text *text_rend = TTF_CreateText(eng, font_get(), item.text, strlen(item.text));
+		TTF_SetTextColorFloat(text_rend, 1, 1, 1, 1);
+
+		int text_w, text_h;
+		TTF_GetStringSize(font_get(), item.text, strlen(item.text), &text_w, &text_h);
+		
+		TTF_DrawRendererText(text_rend, rect->x +rect->w/2 - text_w/2, rect->y + text_h/2);
+		TTF_DestroyText(text_rend);
 	}
-	SDL_SetRenderDrawColorFloat(rend, 1, 1, 1, 1);
-	SDL_RenderRect(rend, rect);
+
+	TTF_DestroyRendererTextEngine(eng);
 
 	SDL_RenderPresent(rend);
 }

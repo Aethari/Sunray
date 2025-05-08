@@ -1,5 +1,5 @@
 /*
- * The main file, where SDL is started and the main loops run
+ * The main file, where SDL is started and the game loops run
  * 2025 DJaySky
  */
 
@@ -19,6 +19,10 @@
 #include "player.h"
 
 #include "luaE.h"
+
+#if defined(__WIN32)
+	bool is_win = true;
+#endif
 
 /// How long a frame should be, in ms (16ms is 60 fps)
 #define FRAME_TARGET_TIME 16
@@ -67,6 +71,15 @@ int main(int arc, char *argv[]) {
 	// Initialize SDL_ttf
 	TTF_Init();
 
+	// Load the game's font
+	char *base_path = SDL_GetBasePath();
+
+	char *font_path[2048];
+	strcpy(font_path, base_path);
+	strcat(font_path, "vcr_ost_mono.ttf");
+
+	font_open(font_path, 12);
+
 	// Initilize SDL
 	log_pwrite(log_path, "[ C ] [Core] Initializing SDL\n");
 	SDL_Init(
@@ -89,14 +102,6 @@ int main(int arc, char *argv[]) {
 	// Lock the mouse
 	log_pwrite(log_path, "[ C ] [Core] Locking mouse\n");
 	SDL_SetWindowRelativeMouseMode(window, true);
-
-	// Load the game's font
-	char font_path[1000];
-	// we will need to go up a directory here with a custom function
-	strcpy(font_path, argv[0]);
-
-	strcat(font_path, "/vcr_ost_mono.ttf");
-	font_open(font_path, 12);
 
 	// DEBUG - set the default map
 	int map[] = {
