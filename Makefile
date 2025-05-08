@@ -54,8 +54,8 @@ clean: clean-nix
 endif
 
 # -- Includes/linking -----------------------------------------
-INCLUDE = -Isrc -Ilib/SDL/include -Ilib/SDL_ttf/include -Ilib/lua/src
-LINK = -Llib
+INCLUDE = -Isrc -Ilib/SDL/include -Ilib/SDL_ttf/include -Ilib/Lua/src
+LINK = -Llib -Lbuild
 CFLAGS = -lSDL3 -lSDL3_ttf -llua54 -lm -Wall
 
 # == Unix targets =============================================
@@ -65,14 +65,18 @@ build-nix:
 	mkdir -p build
 
 	cp lib/libSDL3.so.0.2.12 build/libSDL3.so.0.2.12
-	ln -s build/libSDL3.so.0.2.12 build/libSDL3.so.0
-	ln -s build/libSDL3.so.0.2.12 build/libSDL3.so
+	ln -s libSDL3.so.0.2.12 build/libSDL3.so.0
+	ln -s libSDL3.so.0.2.12 build/libSDL3.so
 
 	cp lib/libSDL3_ttf.so.0.3.0 build/libSDL3_ttf.so.0.3.0
-	ln -s build/libSDL3_ttf.so.0.3.0 build/libSDL3_ttf.so.0
-	ln -s build/libSDL3_ttf.so.0.3.0 build/libSDL3_ttf.so
+	ln -s libSDL3_ttf.so.0.3.0 build/libSDL3_ttf.so.0
+	ln -s libSDL3_ttf.so.0.3.0 build/libSDL3_ttf.so
+
+	cp lib/liblua54.a build/liblua54.a
 
 	cp -R src/scripts build/scripts
+
+	cp lib/vcr_osd_mono.ttf build/vcr_ost_mono.ttf
 
 	cp LICENSE.txt build/LICENSE.txt
 
@@ -85,7 +89,7 @@ test-nix:
 
 	@echo
 	@echo Running project:
-	./build/sunray
+	LD_LIBRARY_PATH=build ./build/sunray
 
 install-nix:
 	make
@@ -113,6 +117,9 @@ build-win:
 
 	@echo xcopy src/scripts build/scripts
 	@cmd /C "xcopy src\\scripts build\\scripts /E /I /H /Y > nul"
+
+	@echo copy /Y "lib/vcr_osd_mono.ttf" "build/vcr_osd_mono.ttf"
+	@cmd /C "copy /Y "lib\\vcr_osd_mono.ttf" "build\\vcr_ost_mono.ttf" > nul"
 
 	@echo copy /Y "LICENSE.txt" "build/LICENSE.txt"
 	@cmd /C "copy /Y "LICENSE.txt" "build\\LICENSE.txt" > nul"

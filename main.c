@@ -11,6 +11,7 @@
 
 #include "util/log.h"
 #include "util/map.h"
+#include "util/font.h"
 #include "util/page.h"
 #include "util/rays.h"
 
@@ -63,6 +64,9 @@ int main(int arc, char *argv[]) {
 	char *log_path = log_get_path();
 	log_clear(log_path);
 
+	// Initialize SDL_ttf
+	TTF_Init();
+
 	// Initilize SDL
 	log_pwrite(log_path, "[ C ] [Core] Initializing SDL\n");
 	SDL_Init(
@@ -85,6 +89,14 @@ int main(int arc, char *argv[]) {
 	// Lock the mouse
 	log_pwrite(log_path, "[ C ] [Core] Locking mouse\n");
 	SDL_SetWindowRelativeMouseMode(window, true);
+
+	// Load the game's font
+	char font_path[1000];
+	// we will need to go up a directory here with a custom function
+	strcpy(font_path, argv[0]);
+
+	strcat(font_path, "/vcr_ost_mono.ttf");
+	font_open(font_path, 12);
 
 	// DEBUG - set the default map
 	int map[] = {
