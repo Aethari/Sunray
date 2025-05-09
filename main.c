@@ -72,9 +72,9 @@ int main(int arc, char *argv[]) {
 	TTF_Init();
 
 	// Load the game's font
-	char *base_path = SDL_GetBasePath();
+	const char *base_path = SDL_GetBasePath();
 
-	char *font_path[2048];
+	char font_path[2048];
 	strcpy(font_path, base_path);
 	strcat(font_path, "vcr_ost_mono.ttf");
 
@@ -133,6 +133,7 @@ int main(int arc, char *argv[]) {
 
 	page_set_name("Main Menu");
 
+	// Setup player state
 	player_set_pos_x(1.5);
 	player_set_pos_y(1.5);
 	player_set_angle(0);

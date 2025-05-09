@@ -89,7 +89,9 @@ test-nix:
 
 	@echo
 	@echo Running project:
-	LD_LIBRARY_PATH=build ./build/sunray
+	@echo ./build/sunray
+	@echo
+	@LD_LIBRARY_PATH=build ./build/sunray
 
 install-nix:
 	make
@@ -133,7 +135,9 @@ test-win:
 
 	@echo
 	@echo Running project:
-	./build/sunray.exe
+	@echo ./build/sunray.exe
+	@echo
+	@./build/sunray.exe
 
 clean-win:
 	@cmd /C "if not exist "build" mkdir build"
