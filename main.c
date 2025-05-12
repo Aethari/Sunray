@@ -11,6 +11,7 @@
 
 #include "util/log.h"
 #include "util/map.h"
+#include "util/mapgen.h"
 #include "util/font.h"
 #include "util/page.h"
 #include "util/rays.h"
@@ -127,6 +128,9 @@ int main(int arc, char *argv[]) {
 		1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1
 	};
 	map_change(map, 20, 20);
+
+	// DEBUG - test map generation
+	map_gen_layer(1, 20, 20);
 
 	// Main game loop
 	log_pwrite(log_path, "[ C ] [Core] Starting main game loop\n");

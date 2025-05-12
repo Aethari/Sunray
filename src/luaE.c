@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include <lua.h>
 #include <lauxlib.h>
@@ -151,10 +152,12 @@ lua_State *luaE_new() {
 	return L;
 }
 
-void luaE_dostring(char s[]) {
+void luaE_dostring(char s[], lua_State *L) {
 	char *log_path = log_get_path();
 
-	lua_State *L = luaE_new();
+	if(L == NULL) {
+		L = luaE_new();
+	}
 
 	char msg[1000];
 	char buff[] = "[ C ] [Script] Attempting to execute Lua string \"%s\"\n";
@@ -173,10 +176,14 @@ void luaE_dostring(char s[]) {
 	lua_close(L);
 }
 
-void luaE_dofile(char path[]) {
+void luaE_dofile(char path[], lua_State *L) {
 	char *log_path = log_get_path();
+	bool new_state = false;
 
-	lua_State *L = luaE_new();
+	if(L == NULL) {
+		L = luaE_new();
+		new_state = true;
+	}
 
 	char msg[1000];
 	char buff[] = "[ C ] [Script] Attempting to execute Lua file \"%s\"\n";
@@ -188,7 +195,7 @@ void luaE_dofile(char path[]) {
 		char mesg[1000];
 		char buff[] = "[ C ] [Script] Successfully executed Lua file \"%s\"\n";
 		sprintf(mesg, buff, path);
-
+		
 		log_pwrite(log_path, mesg);
 	} else {
 		char mesg[1000];
@@ -200,5 +207,5 @@ void luaE_dofile(char path[]) {
 	}
 
 	free(log_path);
-	lua_close(L);
+	if(new_state) lua_close(L);
 }

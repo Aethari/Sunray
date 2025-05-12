@@ -113,6 +113,10 @@ the header (.h) file. Just in case, however, they are also documented here.
 [map.h](src/util/map.h): Access and manipulation of the game's current map.
                      Only one map can be loaded at any given time.  
 
+[mapgen.h](src/util/mapgen.h): Handles map generation via a Lua script
+							   located at [src/scripts/mapgen.lua](src/
+							   scripts/mapgen.lua)
+
 [rays.h](src/util/rays.h): One of the most important headers in the repo. 
                        Provides the ability to cast rays and draw from
                        a perspective.  

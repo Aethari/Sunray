@@ -28,19 +28,21 @@
 /// 	lua_close(L);
 lua_State *luaE_new();
 
-/// Creates a new lua_State using luaE_new and then
-/// uses that state to run Lua code.
+/// Uses a given lua_State to run a string of Lua
+/// code. If the lua_State is NULL, a new lua_State
+/// is created with luaE_new().
 ///
 /// Parameters:
 /// - s: The string of Lua code to run
-void luaE_dostring(char s[]);
+void luaE_dostring(char s[], lua_State *L);
 
-/// Creates a new lua_State using luaE_new and then
-/// uses that state to run Lua code loaded from a 
-/// file.
+/// Uses a given lua_State to run Lua code loaded
+/// from a file. If the lua_State is NULL, a new
+/// lua_State is created with luaE_new().
 ///
 /// Parameters:
 /// - path: The path to a .lua file to run
-void luaE_dofile(char path[]);
+/// - L: A pointer to a Lua state that the code will be run with
+void luaE_dofile(char path[], lua_State *L);
 
 #endif
