@@ -15,14 +15,11 @@
 #include "luaE.h"
 #include "map.h"
 
-void map_gen_layer(int layer, int w, int h) {
+void map_gen(int w, int h) {
 	char *log_path = log_get_path();
 	lua_State *L = luaE_new();
 
 	// reorganize these into a global table later
-	lua_pushinteger(L, layer);
-	lua_setglobal(L, "layer");
-
 	lua_pushinteger(L, w);
 	lua_setglobal(L, "map_w");
 

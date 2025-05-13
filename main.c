@@ -105,7 +105,7 @@ int main(int arc, char *argv[]) {
 	SDL_SetWindowRelativeMouseMode(window, true);
 
 	// DEBUG - test map generation
-	map_gen_layer(1, 20, 20);
+	map_gen(100, 100);
 
 	// Main game loop
 	log_pwrite(log_path, "[ C ] [Core] Starting main game loop\n");
@@ -113,10 +113,10 @@ int main(int arc, char *argv[]) {
 	page_set_name("Main Menu");
 
 	// Setup player state
-	player_set_pos_x(1.5);
-	player_set_pos_y(1.5);
+	player_set_pos_x(2);
+	player_set_pos_y(2);
 	player_set_angle(0);
-	player_set_speed(4);
+	player_set_speed(3);
 	player_set_turnspeed(4);
 	player_set_fov(1.22173); // (in radians)
 
