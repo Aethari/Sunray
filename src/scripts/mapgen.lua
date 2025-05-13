@@ -43,11 +43,11 @@ local function gen_Layer_4()
 end
 
 if layer == 1 then
-	return gen_Layer_1()
+	return gen_layer_1()
 elseif layer == 2 then
-	return gen_Layer_2()
+	return gen_layer_2()
 elseif layer == 3 then
-	return gen_Layer_3()
+	return gen_layer_3()
 elseif layer == 4 then
-	return gen_Layer_4()
+	return gen_layer_4()
 end
