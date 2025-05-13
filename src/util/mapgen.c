@@ -38,8 +38,14 @@ void map_gen_layer(int layer, int w, int h) {
 
 	luaE_dofile(file, L);
 
-	int new_map[h * w] = {};
-
+	int *new_map = (int *)calloc(h * w, sizeof(int));
+	if(!new_map) {
+		log_pwrite(log_path, "[ C ] [Error] Failed to allocate memory for map\n");
+		free(log_path);
+		lua_close(L);
+		exit(1);
+	}
+	
 	if(lua_istable(L, -1)) {
 		for(int y = 1; y <= h; y++) {
 			lua_pushinteger(L, y);
@@ -48,6 +54,7 @@ void map_gen_layer(int layer, int w, int h) {
 			if(!lua_istable(L, -1)) {
 				log_pwrite(log_path, "[ C ] [Error] Value retrieved from map generation is not a 2 dimensional matrix\n");
 				free(log_path);
+				free(new_map);
 				exit(1);
 			}
 
@@ -58,6 +65,7 @@ void map_gen_layer(int layer, int w, int h) {
 				if(!lua_isinteger(L, -1)) {
 					log_pwrite(log_path, "[ C ] [Error] Value retrieved from map generation does not use integers for map cells\n");
 					free(log_path);
+					free(new_map);
 					exit(1);
 				}
 
@@ -71,16 +79,10 @@ void map_gen_layer(int layer, int w, int h) {
 	} else {
 		log_pwrite(log_path, "[ C ] [Error] Value retrieved from map generation is not a table\n");
 		free(log_path);
+		free(new_map);
 		exit(1);
 	}
 	
-	for(int y = 0; y < h; y++) {
-		for(int x = 0; x < w; x++) {
-			printf("%3d ", new_map[y * w + x]);
-		}
-		printf("\n");
-	}
-
 	map_change(new_map, w, h);
 
 	free(log_path);

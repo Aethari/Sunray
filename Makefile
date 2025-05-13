@@ -82,7 +82,7 @@ build-nix:
 
 	@echo
 	@echo Compiling project:
-	$(CC) $(SRCS) $(INCLUDE) $(LINK) $(CFLAGS) -o build/sunray
+	$(CC) $(SRCS) $(INCLUDE) $(LINK) $(CFLAGS) -g -o build/sunray
 
 test-nix:
 	make

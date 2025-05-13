@@ -6,7 +6,6 @@
 #ifndef MAPGEN_H
 #define MAPGEN_H
 
-
 void map_gen_layer(int layer, int w, int h);
 
 #endif
