@@ -170,6 +170,10 @@ void luaE_dostring(char s[], lua_State *L) {
 	} else {
 		log_pwrite(log_path, "[ C ] [Script] Execution of Lua string failed:\n");
 		luaL_error(L, "Error:%s\n", lua_tostring(L, -1));
+
+		free(log_path);
+		lua_close(L);
+		exit(1);
 	}
 
 	free(log_path);
@@ -204,6 +208,10 @@ void luaE_dofile(char path[], lua_State *L) {
 
 		log_pwrite(log_path, mesg);
 		luaL_error(L, "Error:%s\n", lua_tostring(L, -1));
+
+		free(log_path);
+		if(new_state) lua_close(L);
+		exit(1);
 	}
 
 	free(log_path);

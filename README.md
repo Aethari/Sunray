@@ -1,8 +1,8 @@
 # Sunray: A raycasted game/engine
 Welcome to Sunray, my current main project. Sunray is a first person,
-raycasted dungeon crawler in **very** early development. As the project
-expands, its focus and direction will become more clear, as I have not 
-fully finished the game's design yet.
+raycasted dungeon crawler in ***very*** early development. As the 
+project expands, its focus and direction will become more clear, as I
+have not fully finished the game's design yet.
 
 **Note:** Sunray is merely a working title. When I am further along with
 the game's development, I will choose an actual title for the game. Once

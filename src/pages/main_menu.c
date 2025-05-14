@@ -15,6 +15,8 @@
 #include "util/log.h"
 #include "util/font.h"
 #include "util/page.h"
+#include "util/map.h"
+#include "util/mapgen.h"
 
 #define MENU_ITEM_COUNT 2
 #define MENU_MAX_TEXT_LEN 2048
@@ -68,6 +70,7 @@ bool main_menu_update() {
 		switch(menu_index) {
 			case 0:
 				page_set_name("Game");
+				map_gen(100, 100);
 				break;
 			case 1:
 				return false;

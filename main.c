@@ -104,9 +104,6 @@ int main(int arc, char *argv[]) {
 	log_pwrite(log_path, "[ C ] [Core] Locking mouse\n");
 	SDL_SetWindowRelativeMouseMode(window, true);
 
-	// DEBUG - test map generation
-	map_gen(100, 100);
-
 	// Main game loop
 	log_pwrite(log_path, "[ C ] [Core] Starting main game loop\n");
 
