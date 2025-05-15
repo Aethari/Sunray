@@ -6,7 +6,6 @@ local log = Engine.log
 local log_path = log.get_path()
 
 local rooms = {}
-local tunnels = {}
 
 -- Takes a space with a width and height, then recursively 
 -- splits it into two smaller spaces, randomly choosing a
@@ -15,8 +14,8 @@ local function split(node)
 	local rand = math.random()
 	local dir = math.random()
 
-	local min_w = 7
-	local min_h = 7
+	local min_w = 10
+	local min_h = 10
 
 	-- clamp rand
 	if rand < .3 then rand = .3 end
@@ -105,62 +104,36 @@ local function create_rooms(node)
 		room.x = math.random(node.x, node.x + node.w - room.w)
 		room.y = math.random(node.y, node.y + node.h - room.h)
 
-		room.center_x = math.floor(room.w/2)
-		room.center_y = math.floor(room.h/2)
+		room.center_x = room.x + math.floor(room.w/2)
+		room.center_y = room.y + math.floor(room.h/2)
 
 		table.insert(rooms, room)
 	end
 end
 
--- Loops through the `rooms` table, creating
--- tunnels connecting each room to the
--- previous room in the table.
-local function create_tunnels()
-	for i = 2, #rooms do
-		local prev_room = rooms[i-1]
-		local room = rooms[i]
+-- Loops through the BSP tree, connecting each
+-- sister node to each other with a tunnel,
+-- storing each tunnel in the `tunnels` table.
+local function create_tunnels(node)
+	if node.a then
+		if not node.a.a then
+			-- connect node.a and node.b
+			local rooma = node.a.room
+			local roomb = node.b.room
 
-		local x1, y1 = room.center_x, room.center_y
-		local x2, y2 = prev_room.center_x, prev_room.center_y
+			local x1, y1 = rooma.center_x, rooma.center_y
+			local x2, y2 = roomb.center_x, roomb.center_y
 
-		-- horizontal tunnel coming out
-		if math.random() < .5 then
-			table.insert(
-				tunnels, {
-					dir = "h",
-					x1 = x1,
-					x2 = x2,
-					y = y1,
-				}
-			)
+			local tunnel = {}
 
-			table.insert(
-				tunnels, {
-					dir = "v",
-					y1 = y1,
-					y2 = y2,
-					x = x1
-				}
-			)
-		-- vertical tunnel coming out
+			if math.random() < .5 then
+				for x = math.min(x1, x2), math.max(x1, x2) do
+					out[y][x] = 0
+				end
+			else
+			end
 		else
-			table.insert(
-				tunnels, {
-					dir = "v",
-					y1 = y1,
-					y2 = y2,
-					x = x1
-				}
-			)
-
-			table.insert(
-				tunnels, {
-					dir = "h",
-					x1 = x1,
-					x2 = x2,
-					y = y2
-				}
-			)
+			create_tunnels(node.a)
 		end
 	end
 end
@@ -201,8 +174,8 @@ local function gen_level()
 	log.pwrite(log_path, "[Lua] [Map] Creating rooms\n")
 	create_rooms(root)
 
-	log.pwrite(log_path, "[Lua] [Map] Creating tunnels")
-	create_tunnels()
+	log.pwrite(log_path, "[Lua] [Map] Creating and inserting tunnels")
+	create_tunnels(root)
 	
 	log.pwrite(log_path, "[Lua] [Map] Inserting rooms into map\n")
 	for _, room in ipairs(rooms) do
@@ -218,16 +191,10 @@ local function gen_level()
 	end
 
 	-- set player position to spawn in the last room
-	local room_x = rooms[#rooms].x
-	local room_y = rooms[#rooms].y
-	Engine.player.set_x(room_x + 1.5)
-	Engine.player.set_y(room_y + 1.5)
-
-	log.pwrite(log_path, "[Lua] [Map] Inserting tunnels into map\n")
-	-- loop through `tunnels` and place tiles in `out`
-	-- make sure to create openings in the existing rooms
-	for _, tunnel in ipairs(tunnels) do
-	end
+	local room_x = rooms[#rooms].center_x
+	local room_y = rooms[#rooms].center_y
+	Engine.player.set_x(room_x)
+	Engine.player.set_y(room_y)
 
 	return out
 end

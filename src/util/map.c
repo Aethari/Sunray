@@ -58,13 +58,13 @@ TileType map_get(int x, int y) {
 		return (TileType)map[y * map_get_size_x() + x];
 	} else {
 		char msg[1000];
-		char buff[] = "[ C ] [WARNING] Map tile (%d, %d) out of bounds in map_get()\n";
+		char buff[] = "[ C ] [Error] Map tile (%d, %d) out of bounds in map_get()\n";
 		sprintf(msg, buff, x, y);
 
 		log_pwrite(log_path, msg);
 
 		free(log_path);
-		return TILE_EMPTY;
+		exit(1);
 	}
 }
 

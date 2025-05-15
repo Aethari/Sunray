@@ -153,7 +153,7 @@ int main(int arc, char *argv[]) {
 		free(page_name);
 	}
 
-	log_pwrite(log_path, "[ C ] [Core] Freeing memory\n");
+	log_pwrite(log_path, "[ C ] [Core] Freeing allocated memory\n");
 	log_pwrite(log_path, "[ C ] [Core] Shutting down\n");
 	free(log_path);
 	free(map);
