@@ -15,8 +15,8 @@ local function split(node)
 	local rand = math.random()
 	local dir = math.random()
 
-	local min_w = 6
-	local min_h = 6
+	local min_w = 7
+	local min_h = 7
 
 	-- clamp rand
 	if rand < .3 then rand = .3 end
@@ -95,7 +95,7 @@ local function create_rooms(node)
 		-- generate the room based on node
 		local rand = math.random()
 
-		if rand < .5 then rand = .5 end
+		if rand < .6 then rand = .6 end
 
 		local room = {}
 
@@ -116,6 +116,53 @@ end
 -- tunnels connecting each room to the
 -- previous room in the table.
 local function create_tunnels()
+	for i = 2, #rooms do
+		local prev_room = rooms[i-1]
+		local room = rooms[i]
+
+		local x1, y1 = room.center_x, room.center_y
+		local x2, y2 = prev_room.center_x, prev_room.center_y
+
+		-- horizontal tunnel coming out
+		if math.random() < .5 then
+			table.insert(
+				tunnels, {
+					dir = "h",
+					x1 = x1,
+					x2 = x2,
+					y = y1,
+				}
+			)
+
+			table.insert(
+				tunnels, {
+					dir = "v",
+					y1 = y1,
+					y2 = y2,
+					x = x1
+				}
+			)
+		-- vertical tunnel coming out
+		else
+			table.insert(
+				tunnels, {
+					dir = "v",
+					y1 = y1,
+					y2 = y2,
+					x = x1
+				}
+			)
+
+			table.insert(
+				tunnels, {
+					dir = "h",
+					x1 = x1,
+					x2 = x2,
+					y = y2
+				}
+			)
+		end
+	end
 end
 
 -- Generates the entire dungeon using Binary Space 
@@ -170,9 +217,17 @@ local function gen_level()
 		end
 	end
 
+	-- set player position to spawn in the last room
+	local room_x = rooms[#rooms].x
+	local room_y = rooms[#rooms].y
+	Engine.player.set_x(room_x + 1.5)
+	Engine.player.set_y(room_y + 1.5)
+
 	log.pwrite(log_path, "[Lua] [Map] Inserting tunnels into map\n")
 	-- loop through `tunnels` and place tiles in `out`
 	-- make sure to create openings in the existing rooms
+	for _, tunnel in ipairs(tunnels) do
+	end
 
 	return out
 end

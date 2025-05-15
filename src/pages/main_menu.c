@@ -70,7 +70,7 @@ bool main_menu_update() {
 		switch(menu_index) {
 			case 0:
 				page_set_name("Game");
-				map_gen(100, 100);
+				map_gen(50, 50);
 				break;
 			case 1:
 				return false;
