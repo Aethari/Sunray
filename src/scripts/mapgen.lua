@@ -107,6 +107,7 @@ local function create_rooms(node)
 		room.center_x = room.x + math.floor(room.w/2)
 		room.center_y = room.y + math.floor(room.h/2)
 
+		node.room = room
 		table.insert(rooms, room)
 	end
 end
@@ -114,27 +115,33 @@ end
 -- Loops through the BSP tree, connecting each
 -- sister node to each other with a tunnel,
 -- storing each tunnel in the `tunnels` table.
-local function create_tunnels(node)
-	if node.a then
-		if not node.a.a then
-			-- connect node.a and node.b
-			local rooma = node.a.room
-			local roomb = node.b.room
+local function create_tunnels(node, map)
+	if node.a and node.b and node.a.room and node.b.room then
+		-- connect node.a and node.b based on their centers
+		local x1, y1 = node.a.room.center_x, node.a.room.center_y
+		local x2, y2 = node.b.room.center_x, node.b.room.center_y
 
-			local x1, y1 = rooma.center_x, rooma.center_y
-			local x2, y2 = roomb.center_x, roomb.center_y
+		local tunnel = {}
 
-			local tunnel = {}
+		if math.random() < .5 then
+			for x = math.min(x1, x2), math.max(x1, x2) do
+				map[y1][x] = 0
+			end
 
-			if math.random() < .5 then
-				for x = math.min(x1, x2), math.max(x1, x2) do
-					out[y][x] = 0
-				end
-			else
+			for y = math.min(y1, y2), math.max(y1, y2) do
+				map[y][x2] = 0
 			end
 		else
-			create_tunnels(node.a)
+			for y = math.min(y1, y2), math.max(y1, y2) do
+				map[y][x1] = 0
+			end
+
+			for x = math.min(x1, x2), math.max(x1, x2) do
+				map[y2][x] = 0
+			end
 		end
+	else
+		create_tunnels(node.a, map)
 	end
 end
 
@@ -175,9 +182,10 @@ local function gen_level()
 	create_rooms(root)
 
 	log.pwrite(log_path, "[Lua] [Map] Creating and inserting tunnels")
-	create_tunnels(root)
+	create_tunnels(root, out)
 	
 	log.pwrite(log_path, "[Lua] [Map] Inserting rooms into map\n")
+	-- change this to fill the empty spaces with 0s
 	for _, room in ipairs(rooms) do
 		for x = room.x, room.x + room.w do
 			out[room.y+1][x] = 1
