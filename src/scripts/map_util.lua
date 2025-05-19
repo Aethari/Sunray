@@ -1,5 +1,5 @@
 -- A simple script to generate empty text maps quickly
--- 2025 DJaySky
+-- 2025 Aethari
 
 continue = "y"
 

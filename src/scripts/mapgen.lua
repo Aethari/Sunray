@@ -1,6 +1,6 @@
 -- Map generation script
 -- util/mapgen.h uses this script to generate the maps
--- 2025 DJaySky
+-- 2025 Aethari
 
 local log = Engine.log
 local log_path = log.get_path()

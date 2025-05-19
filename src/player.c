@@ -1,7 +1,7 @@
 /*
  * Variables and functions to manage the player
  * See player.h for documentation
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #include <stdio.h>

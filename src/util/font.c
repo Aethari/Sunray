@@ -1,7 +1,7 @@
 /*
  * Middleground between UI and SDL_ttf designed to help performance
  * See font.h for documentation
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #include <stdio.h>

@@ -1,7 +1,7 @@
 /*
  * Game screen/page handling
  * See page.h for documentation
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #include <stdio.h>

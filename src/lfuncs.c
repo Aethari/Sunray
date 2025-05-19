@@ -1,7 +1,7 @@
 /*
  * Bindings from engine functions to lua_CFunctions
  * See lfuncs.h for documentation
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #include <stdlib.h>

@@ -2,7 +2,7 @@
  * A custom Lua scripting interface built on Lua's C API
  * Provides helper functions and easy access to the Lua state
  * See luaE.h for documentation
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #include <stdio.h>

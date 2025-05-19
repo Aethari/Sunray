@@ -1,7 +1,7 @@
 /*
  * Definition and manipulation of the game's map
  * See map.h for documentation
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #include <stdio.h>

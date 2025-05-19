@@ -1,6 +1,6 @@
 /*
  * The main file, where SDL is started and the game loops run
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #include <stdio.h>

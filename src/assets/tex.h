@@ -1,6 +1,6 @@
 /*
  * Various textures used throughout the game, colors, and some helper functions
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #ifndef TEX_H

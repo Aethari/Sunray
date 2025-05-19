@@ -1,6 +1,6 @@
 /*
  * Bindings from engine functions to lua_CFunctions
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #include <lua.h>

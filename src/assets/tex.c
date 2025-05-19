@@ -1,7 +1,7 @@
 /*
  * Various textures used throughout the game, and some helper functions
  * See tex.h for documentation
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #include <stdio.h>

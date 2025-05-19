@@ -1,6 +1,6 @@
 /*
  * Game screen/page handling
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #ifndef PAGE_H

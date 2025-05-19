@@ -1,6 +1,6 @@
 /*
  * Creation and writing of log files
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #ifndef LOG_H

@@ -1,6 +1,6 @@
 /*
  * Map generation methods and script access
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #ifndef MAPGEN_H

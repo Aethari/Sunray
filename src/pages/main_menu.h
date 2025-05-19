@@ -1,6 +1,6 @@
 /*
  * Drawing and updating for the main menu
- * 2025 DJaySky
+ * 2025 Aethari
  */
 
 #ifndef MAIN_MENU_H

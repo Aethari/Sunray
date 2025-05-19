@@ -1,7 +1,7 @@
 /*
  * A custom Lua scripting interface built on Lua's C API
  * Provides helper functions and easy access to the Lua state
- * 2025 DJaySky
+ * 2025 Aethari
  *
  * I chose to name the header and also functions luaE to go
  * along with the existing C API's naming conventions of "lua"

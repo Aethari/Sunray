@@ -1,6 +1,6 @@
 /*
  * Definition and manipulation of the game's map
- * 2025 DJaySky
+ * 2025 Aethari
  *
  * Some notes about maps:
  * - There can only ever be one map loaded at any given time

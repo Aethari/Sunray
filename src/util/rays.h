@@ -1,6 +1,6 @@
 /*
  * Casting primary and helper functions
- * 2025 DJaySky
+ * 2025 Aethari
  *
  * The functions in this file, while using the DDA algorithm (common in 
  * raycasting) are definitely hardcoded for this project. A good example
