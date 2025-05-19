@@ -11,7 +11,12 @@ local rooms = {}
 -- splits it into two smaller spaces, randomly choosing a
 -- direction to split in (horizontal or vertical).
 local function split(node)
+	-- rand decides at what point the split should be
+	-- created (30-70% along the w/h of the area)
 	local rand = math.random()
+
+	-- dir decides the direction to split in (vertical
+	-- or horizontal)
 	local dir = math.random()
 
 	local min_w = 10
@@ -43,7 +48,7 @@ local function split(node)
 			split(node.a)
 		end
 
-		if node.b.w > min_w and node.a.h > min_h then
+		if node.b.w > min_w and node.b.h > min_h then
 			split(node.b)
 		end
 	-- horizontal
@@ -68,7 +73,7 @@ local function split(node)
 			split(node.a)
 		end
 
-		if node.b.w > min_w and node.a.h > min_h then
+		if node.b.w > min_w and node.b.h > min_h then
 			split(node.b)
 		end
 	end
@@ -80,6 +85,7 @@ end
 local function create_rooms(node)
 	local gen_rooms = true
 
+	-- if statements check for leaf nodes
 	if node.a then
 		create_rooms(node.a)
 		gen_rooms = false
@@ -116,33 +122,49 @@ end
 -- sister node to each other with a tunnel,
 -- storing each tunnel in the `tunnels` table.
 local function create_tunnels(node, map)
+	if not node then return end
+
 	if node.a and node.b and node.a.room and node.b.room then
 		-- connect node.a and node.b based on their centers
 		local x1, y1 = node.a.room.center_x, node.a.room.center_y
 		local x2, y2 = node.b.room.center_x, node.b.room.center_y
 
-		local tunnel = {}
+		-- for the drawing loops of the second tunnels, we
+		-- need a way to 
 
+		-- horizontal then vertical
 		if math.random() < .5 then
 			for x = math.min(x1, x2), math.max(x1, x2) do
+				map[y1+1][x] = 2
+				map[y1-1][x] = 2
 				map[y1][x] = 0
 			end
 
 			for y = math.min(y1, y2), math.max(y1, y2) do
+				map[y][x2+1] = 2
+				map[y][x2-1] = 2
 				map[y][x2] = 0
 			end
+
+			map[math.min(y1,y2)][math.max(x1,x2)] = 0
+		-- vertical then horizontal
 		else
 			for y = math.min(y1, y2), math.max(y1, y2) do
+				map[y][x1+1] = 2
+				map[y][x1-1] = 2
 				map[y][x1] = 0
 			end
 
 			for x = math.min(x1, x2), math.max(x1, x2) do
+				map[y2+1][x] = 2
+				map[y2-1][x] = 2
 				map[y2][x] = 0
 			end
 		end
-	else
-		create_tunnels(node.a, map)
 	end
+	
+	if node.a then create_tunnels(node.a, map) end
+	if node.b then create_tunnels(node.b, map) end
 end
 
 -- Generates the entire dungeon using Binary Space 
@@ -169,8 +191,8 @@ local function gen_level()
 	end
 
 	local root = {
-		x = 0,
-		y = 0,
+		x = 1,
+		y = 1,
 		w = map_w,
 		h = map_h
 	}
@@ -181,20 +203,29 @@ local function gen_level()
 	log.pwrite(log_path, "[Lua] [Map] Creating rooms\n")
 	create_rooms(root)
 
-	log.pwrite(log_path, "[Lua] [Map] Creating and inserting tunnels")
-	create_tunnels(root, out)
-	
 	log.pwrite(log_path, "[Lua] [Map] Inserting rooms into map\n")
 	-- change this to fill the empty spaces with 0s
-	for _, room in ipairs(rooms) do
+	for _, room in ipairs(rooms) do	
 		for x = room.x, room.x + room.w do
-			out[room.y+1][x] = 1
-			out[room.y+room.h][x] = 1
+			out[room.y][x] = 1
+			out[room.y+room.h-1][x] = 1
 		end
 
-		for y = room.y+1, room.y + room.h do
-			out[y][room.x+1] = 1
-			out[y][room.x+room.w] = 1
+		for y = room.y, room.y + room.h do
+			out[y][room.x] = 1
+			out[y][room.x+room.w-1] = 1
+		end
+	end
+
+	log.pwrite(log_path, "[Lua] [Map] Creating and inserting tunnels\n")
+	create_tunnels(root, out)
+
+	log.pwrite(log_path, "[Lua] [Map] Clearing room centers\n")
+	for _, room in ipairs(rooms) do
+		for y = room.y, room.y + room.h-1 do
+			for x = room.x, room.x + room.w-1 do
+				out[y][x] = 0
+			end
 		end
 	end
 
