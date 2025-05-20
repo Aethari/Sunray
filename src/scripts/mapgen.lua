@@ -19,8 +19,8 @@ local function split(node)
 	-- or horizontal)
 	local dir = math.random()
 
-	local min_w = 10
-	local min_h = 10
+	local min_w = 5
+	local min_h = 5
 
 	-- clamp rand
 	if rand < .3 then rand = .3 end
@@ -101,6 +101,7 @@ local function create_rooms(node)
 		local rand = math.random()
 
 		if rand < .6 then rand = .6 end
+		if rand > .9 then rand = .9 end
 
 		local room = {}
 
@@ -135,30 +136,20 @@ local function create_tunnels(node, map)
 		-- horizontal then vertical
 		if math.random() < .5 then
 			for x = math.min(x1, x2), math.max(x1, x2) do
-				map[y1+1][x] = 2
-				map[y1-1][x] = 2
-				map[y1][x] = 0
+				if x < map_w-1 and x > 0 then map[y1][x] = 0 end
 			end
 
 			for y = math.min(y1, y2), math.max(y1, y2) do
-				map[y][x2+1] = 2
-				map[y][x2-1] = 2
-				map[y][x2] = 0
+				if y < map_h-1 and y > 0 then map[y][x2] = 0 end
 			end
-
-			map[math.min(y1,y2)][math.max(x1,x2)] = 0
 		-- vertical then horizontal
 		else
 			for y = math.min(y1, y2), math.max(y1, y2) do
-				map[y][x1+1] = 2
-				map[y][x1-1] = 2
-				map[y][x1] = 0
+				if y < map_h-1 and y > 0 then map[y][x1] = 0 end
 			end
 
 			for x = math.min(x1, x2), math.max(x1, x2) do
-				map[y2+1][x] = 2
-				map[y2-1][x] = 2
-				map[y2][x] = 0
+				if x < map_w-1 and x > 0 then map[y2][x] = 0 end
 			end
 		end
 	end
@@ -177,22 +168,13 @@ local function gen_level()
 	for y = 1, map_h do
 		out[y] = {}
 		for x = 1, map_w do
-			if(
-				x == 1 or
-				x == map_w or
-				y == 1 or
-				y == map_h
-			) then
-				out[y][x] = 1
-			else
-				out[y][x] = 0
-			end
+			out[y][x] = 1
 		end
 	end
 
 	local root = {
-		x = 1,
-		y = 1,
+		x = 0,
+		y = 0,
 		w = map_w,
 		h = map_h
 	}
@@ -206,28 +188,22 @@ local function gen_level()
 	log.pwrite(log_path, "[Lua] [Map] Inserting rooms into map\n")
 	-- change this to fill the empty spaces with 0s
 	for _, room in ipairs(rooms) do	
-		for x = room.x, room.x + room.w do
-			out[room.y][x] = 1
-			out[room.y+room.h-1][x] = 1
-		end
-
 		for y = room.y, room.y + room.h do
-			out[y][room.x] = 1
-			out[y][room.x+room.w-1] = 1
+			for x = room.x, room.x + room.w do
+				if 
+					x < map_w-1 and
+					x > 0 and
+					y < map_h-1 and
+					y > 0
+				then
+					out[y][x] = 0
+				end
+			end
 		end
 	end
 
 	log.pwrite(log_path, "[Lua] [Map] Creating and inserting tunnels\n")
 	create_tunnels(root, out)
-
-	log.pwrite(log_path, "[Lua] [Map] Clearing room centers\n")
-	for _, room in ipairs(rooms) do
-		for y = room.y, room.y + room.h-1 do
-			for x = room.x, room.x + room.w-1 do
-				out[y][x] = 0
-			end
-		end
-	end
 
 	-- set player position to spawn in the last room
 	local room_x = rooms[#rooms].center_x

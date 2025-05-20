@@ -5,6 +5,6 @@ Mostly various tasks and small things that need done that could be easily forgot
 
 ## Medium
 - Change path logging in luaE.c (in the dofile/dostring commands) to be limited
-  to a certain amount of characters - truncate with ...
+  to a certain amount of characters - truncate with ... (ellipses)
 
 ## Hard
