@@ -11,16 +11,11 @@ local rooms = {}
 -- splits it into two smaller spaces, randomly choosing a
 -- direction to split in (horizontal or vertical).
 local function split(node)
-	-- rand decides at what point the split should be
-	-- created (30-70% along the w/h of the area)
 	local rand = math.random()
-
-	-- dir decides the direction to split in (vertical
-	-- or horizontal)
 	local dir = math.random()
 
-	local min_w = 5
-	local min_h = 5
+	local min_w = 8
+	local min_h = 8
 
 	-- clamp rand
 	if rand < .3 then rand = .3 end
@@ -29,6 +24,8 @@ local function split(node)
 	-- vertical
 	if dir > .5 then
 		local col = math.floor(rand * node.w)
+		if col < min_w then col = min_w end
+		if node.w - col < min_w then col = node.w - min_w end
 
 		node.a = {
 			x = node.x,
@@ -54,6 +51,8 @@ local function split(node)
 	-- horizontal
 	else
 		local row = math.floor(rand * node.h)
+		if row < min_h then row = min_h end
+		if node.h - row < min_h then col = node.h - min_h end
 
 		node.a = {
 			x = node.x,
@@ -100,13 +99,21 @@ local function create_rooms(node)
 		-- generate the room based on node
 		local rand = math.random()
 
-		if rand < .6 then rand = .6 end
-		if rand > .9 then rand = .9 end
+		if rand < .4 then rand = .4 end
+		if rand > .6 then rand = .6 end
 
 		local room = {}
 
 		room.w = math.floor(node.w * rand)
 		room.h = math.floor(node.h * rand)
+		
+		-- fit room in node - -2 is to make sure the room 
+		-- isn't as large as node
+		if room.w > node.w-2 then room.w = node.w-2 end
+		if room.h > node.h-2 then room.h = node.h-2 end
+
+		if room.w < 3 then room.w = 3 end
+		if room.h < 3 then room.w = 3 end
 
 		room.x = math.random(node.x, node.x + node.w - room.w)
 		room.y = math.random(node.y, node.y + node.h - room.h)
@@ -162,8 +169,8 @@ end
 -- Partitioning.
 local function gen_level()
 	log.pwrite(log_path, "[Lua] [Map] Generating Layer 1 with size ("..map_w..","..map_h..")\n")
-
 	local out = {}
+	rooms = {}
 
 	for y = 1, map_h do
 		out[y] = {}
@@ -173,8 +180,8 @@ local function gen_level()
 	end
 
 	local root = {
-		x = 0,
-		y = 0,
+		x = 1,
+		y = 1,
 		w = map_w,
 		h = map_h
 	}
@@ -205,9 +212,10 @@ local function gen_level()
 	log.pwrite(log_path, "[Lua] [Map] Creating and inserting tunnels\n")
 	create_tunnels(root, out)
 
-	-- set player position to spawn in the last room
 	local room_x = rooms[#rooms].center_x
 	local room_y = rooms[#rooms].center_y
+
+	log.pwrite(log_path, "[Lua] [Map] Setting player spawn to ("..room_x..","..room_y..")\n")
 	Engine.player.set_x(room_x)
 	Engine.player.set_y(room_y)
 

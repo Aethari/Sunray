@@ -15,7 +15,7 @@
 #include "util/map.h"
 #include "assets/tex.h"
 
-#define WALL_COLLISION_DISTANCE .2
+#define WALL_COLLISION_DISTANCE .15
 
 float player_pos_x, player_pos_y, player_speed, player_turnspeed, player_angle, player_fov;
 

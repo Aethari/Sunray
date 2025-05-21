@@ -66,7 +66,11 @@ void map_gen(int w, int h) {
 					exit(1);
 				}
 
-				new_map[(y-1) * w + (x-1)] = lua_tointeger(L, -1);
+				if(y-1 == 0 || x-1 == 0 || y == h-1 || x == w-1) {
+					new_map[(y-1) * w + (x-1)] = 1;
+				} else if(y-1 > 0 && x-1 > 0 && y < h-1 && x < w-1) {
+					new_map[(y-1) * w + (x-1)] = lua_tointeger(L, -1);
+				}
 
 				lua_pop(L, 1);
 			}
