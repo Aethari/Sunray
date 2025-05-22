@@ -63,67 +63,87 @@ end
 local function gen_space(map, x, y, last_dir)
 	if x == 2 and y == 2 then
 		local dir = math.random()
-		
+
 		if dir < .5 then
 			local x2 = gen_tunnel_right(map, x, y)
 			Engine.player.set_angle(0)
-			gen_space(map, x2, y)
+			gen_space(map, x2, y, "right")
 		else
 			local y2 = gen_tunnel_down(map, x, y)
 			Engine.player.set_angle(-4.71239)
-			gen_space(map, x, y2)
+			gen_space(map, x, y2, "down")
 		end
 	else
 		local dir = math.random()
 	
 		-- random chance to generate room or tunnel
-		local room = math.random()
+		local is_room = math.random()
 		room = 1
 
 		if dir < .25 then
 			-- up
-			if room > .5 and last_dir ~= "up" then
-				local y2 = gen_tunnel_up(map, x, y)
-				if y2 then
-					-- generate something with y2
+			if is_room > .6 then
+				if last_dir ~= "up" then
+					local y2 = gen_tunnel_up(map, x, y)
+					if y2 then
+						-- generate something with y2
+					else
+						gen_space(map, x, y, "up")
+					end
 				else
-					gen_space(map, x, y, "up")
+					gen_space(map, x, y, last_dir)
 				end
 			else
 				-- generate room
+				local room = {}
+
+				room.w = math.random(3, 5)
+				room.h = math.random(3, 5)
 			end
-		elseif dir < .5 and last_dir ~= "down" then
+		elseif dir < .5 then
 			-- down
-			if room > .5 then
-				local y2 = gen_tunnel_down(map, x, y)
-				if y2 then
-					-- generate something with y2
+			if is_room > .6 then
+				if last_dir ~= "down" then
+					local y2 = gen_tunnel_down(map, x, y)
+					if y2 then
+						-- generate something with y2
+					else
+						gen_space(map, x, y, "down")
+					end
 				else
-					gen_space(map, x, y, "down")
+					gen_space(map, x, y, last_dir)
 				end
 			else
 				-- generate room
 			end
 		elseif dir < .75 and last_dir ~= "left" then
 			-- left
-			if room > .5 then
-				local x2 = gen_tunnel_left(map, x, y)
-				if x2 then
-					-- generate something with x2
+			if is_room > .6 then
+				if last_dir ~= "left" then
+					local x2 = gen_tunnel_left(map, x, y)
+					if x2 then
+						-- generate something with x2
+					else
+						gen_space(map, x, y, "left")
+					end
 				else
-					gen_space(map, x, y, "left")
+					gen_space(map, x, y, last_dir)
 				end
 			else
 				-- generate room
 			end
 		elseif dir < 1 then
 			-- right
-			if room > .5 and last_dir ~= "right" then
-				local x2 = gen_tunnel_right(map, x, y)
-				if x2 then
-					-- generate something with x2
+			if is_room > .6 then
+				if last_dir ~= "right" then
+					local x2 = gen_tunnel_right(map, x, y)
+					if x2 then
+						-- generate something with x2
+					else
+						gen_space(map, x, y, "right")
+					end
 				else
-					gen_space(map, x, y, "right")
+					gen_space(map, x, y, last_dir)
 				end
 			else
 				-- generate room
