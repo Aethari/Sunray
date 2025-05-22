@@ -31,7 +31,7 @@ me, and I will not be undertaking it myself.
 ### 0. Dependencies
 - `git`: I am going to assume that your access of this repo indicates that
 		 you probably have git anyway. But for a thorough list, it should
-		 be included anyway.
+		 be included.
 
 - `Make`: Make is used to simplify the build process via the [Makefile](Makefile).
 		  You can check if Make is installed by running `make -v` in your terminal.

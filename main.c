@@ -61,7 +61,7 @@ void draw(SDL_Renderer *rend) {
 	SDL_RenderPresent(rend);
 }
 
-int main(int arc, char *argv[]) {
+int main(int argc, char *argv[]) {
 	SDL_Window *window;
 	bool running = true;
 
@@ -112,7 +112,7 @@ int main(int arc, char *argv[]) {
 	// Setup player state
 	player_set_pos_x(2);
 	player_set_pos_y(2);
-	player_set_speed(3);
+	player_set_speed(3.2);
 	player_set_turnspeed(4);
 	player_set_fov(1.22173); // (in radians)
 

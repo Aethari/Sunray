@@ -1,6 +1,6 @@
 # Makefile for building, testing, and installing Sunray.
 # See README.md for more information about the project.
-# See LICENSE.txt for license info
+# See LICENSE.txt for license info.
 
 # == START USER MODIFICATIONS ======================================
 # You may change any of the settings below to suit your environment.

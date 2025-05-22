@@ -14,12 +14,6 @@
 /// `map.h` is called to immediately change to the 
 /// new map.
 ///
-/// The Lua script uses a BSP algorithm (Binary
-/// Space Partitioning) to generate areas where
-/// rooms are placed. So that rooms are not
-/// too small, 7x7 tiles is the smallest a room
-/// can be.
-///
 /// Parameters:
 /// - w,h: The dimensions (in tiles) of the map
 void map_gen(int w, int h);

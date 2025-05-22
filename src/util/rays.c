@@ -190,7 +190,7 @@ void ray_draw_cast(SDL_Renderer *rend, float fov, float angle, float x, float y)
 				}
 
 				float new_color = floor(180 / (1 + corrected_dist / 2.5));
-				float brightness = new_color / 200;
+				float brightness = new_color / 300;
 
 				SDL_FRect wall;
 				wall.x = i*slice_width;
