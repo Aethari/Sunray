@@ -59,7 +59,7 @@ end
 -- Parameters:
 -- * map - The map to carve spaces into
 -- * x,y - The point to start at
--- * dir - The direction that the previous tunnel was generated in
+-- * last_dir - The direction that the previous tunnel was generated in
 local function gen_space(map, x, y, last_dir)
 	if x == 2 and y == 2 then
 		local dir = math.random()
